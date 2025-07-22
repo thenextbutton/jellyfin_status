@@ -5,6 +5,9 @@ from homeassistant.components.sensor import SensorEntity
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.helpers.translation import async_get_translations
 from .const import DOMAIN
+import logging
+
+_LOGGER = logging.getLogger(__name__)
 
 class JellyfinSensor(CoordinatorEntity, SensorEntity):
     """Sensor entity that reports Jellyfin playback activity and user sessions."""
@@ -20,21 +23,18 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
         self._friendly_name = self._attr_name
         self._translations = {}
         self._language = None
-        self._entry = entry  # Store config entry reference for possible future use
 
     async def async_added_to_hass(self):
+        """Preload translations after entity is added to Home Assistant."""
         self._language = self.hass.config.language
         self._translations = await async_get_translations(
             self.hass, self._language, f"custom_components.{DOMAIN}"
         )
+        _LOGGER.debug("Loaded translations for language: %s", self._language)
 
-    async def _t(self, key: str, fallback: str = None) -> str:
-        """Fetch translated string by key from sensor section, loading translations if needed."""
+    def _t(self, key: str, fallback: str = None) -> str:
+        """Fetch translated string by key from sensor section."""
         full_key = f"sensor.{key}"
-        if not self._translations:
-            self._translations = await async_get_translations(
-                self.hass, self.hass.config.language, f"custom_components.{DOMAIN}"
-            )
         return self._translations.get(full_key, fallback or key)
 
     @property
@@ -55,15 +55,8 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
                 return "Active"
         return "Idle"
 
-    async def async_update(self):
-        """Ensure entity is refreshed with latest data."""
-        await super().async_update()
-        self._translations = await async_get_translations(
-            self.hass, self.hass.config.language, f"custom_components.{DOMAIN}"
-        )
-
     @property
-    async def extra_state_attributes(self):
+    def extra_state_attributes(self):
         """Reports all active sessions in sorted order, including emoji-rich details."""
         attrs = {
             "friendly_name": self._friendly_name,
@@ -102,24 +95,24 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
             emoji = {"Audio": "🎵", "Movie": "🎬", "Episode": "📺"}.get(media_type, "📺")
 
             if media_type == "Audio":
-                phrase = f"{emoji} {user} {await self._t('listening_to', 'is listening to')} {artist} – {title}"
+                phrase = f"{emoji} {user} {self._t('listening_to', 'is listening to')} {artist} – {title}"
             elif media_type == "Episode":
                 series = item.get("SeriesName", "Unknown Series")
                 season = item.get("ParentIndexNumber")
                 episode = item.get("IndexNumber")
                 suffix = f" (S{season:02} E{episode:02})" if season and episode else ""
-                phrase = f"{emoji} {user} {await self._t('watching', 'is watching')} {series} – {title}{suffix}"
+                phrase = f"{emoji} {user} {self._t('watching', 'is watching')} {series} – {title}{suffix}"
             elif media_type == "Movie":
-                phrase = f"{emoji} {user} {await self._t('watching', 'is watching')} {title}"
+                phrase = f"{emoji} {user} {self._t('watching', 'is watching')} {title}"
             else:
-                phrase = f"📺 {user} {await self._t('watching', 'is watching')} {title}"
+                phrase = f"📺 {user} {self._t('watching', 'is watching')} {title}"
 
             playing.append(phrase)
 
         if playing:
             attrs["currently_playing"] = "\n".join(playing)
         else:
-            attrs["currently_playing"] = await self._t("idle_message", "")
+            attrs["currently_playing"] = self._t("idle_message", "😴 Idle — nothing to see here")
 
         attrs["active_session_count"] = len(active_sessions)
         attrs["audio_session_count"] = sum(1 for _, item, _ in active_sessions if item.get("Type") == "Audio")
