@@ -26,15 +26,20 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
         self._language = None
 
     async def async_added_to_hass(self):
-        """Preload translations after entity is added to Home Assistant."""
+        """Preload translations and subscribe to coordinator after entity is added."""
         self._language = self.hass.config.language
         self._translations = await async_get_translations(
             self.hass, self._language, f"custom_components.{DOMAIN}"
         )
         _LOGGER.debug("Loaded translations for language: %s", self._language)
 
+        # Subscribe to updates and request an immediate refresh
+        self.coordinator.async_add_listener(self._handle_coordinator_update)
+        await self.coordinator.async_request_refresh()
+
     def _handle_coordinator_update(self) -> None:
         """Called when coordinator provides updated data."""
+        _LOGGER.debug("Coordinator update received, writing sensor state")
         self.async_write_ha_state()
 
     def _t(self, key: str, fallback: str = None) -> str:
