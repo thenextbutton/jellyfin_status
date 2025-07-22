@@ -71,6 +71,7 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
         attrs = {
             "friendly_name": self._friendly_name,
             "polling_enabled": self.coordinator.update_interval is not None,
+            "polling_interval_seconds": int(self.coordinator.update_interval.total_seconds()) if self.coordinator.update_interval else 0,
             "last_updated": self.coordinator.last_updated,
         }
 
