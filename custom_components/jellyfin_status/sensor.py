@@ -20,6 +20,7 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
         self._friendly_name = self._attr_name
         self._translations = {}
         self._language = None
+        self._entry = entry  # Store config entry reference for possible future use
 
     async def async_added_to_hass(self):
         self._language = self.hass.config.language
@@ -27,10 +28,14 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
             self.hass, self._language, f"custom_components.{DOMAIN}"
         )
 
-    def _t(self, key: str, fallback: str = None) -> str:
-        """Fetch translated string by key from sensor section."""
+    async def _t(self, key: str, fallback: str = None) -> str:
+        """Fetch translated string by key from sensor section, loading translations if needed."""
         full_key = f"sensor.{key}"
-        return self._translations.get(full_key) or fallback or key
+        if not self._translations:
+            self._translations = await async_get_translations(
+                self.hass, self.hass.config.language, f"custom_components.{DOMAIN}"
+            )
+        return self._translations.get(full_key, fallback or key)
 
     @property
     def state(self):
@@ -50,8 +55,15 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
                 return "Active"
         return "Idle"
 
+    async def async_update(self):
+        """Ensure entity is refreshed with latest data."""
+        await super().async_update()
+        self._translations = await async_get_translations(
+            self.hass, self.hass.config.language, f"custom_components.{DOMAIN}"
+        )
+
     @property
-    def extra_state_attributes(self):
+    async def extra_state_attributes(self):
         """Reports all active sessions in sorted order, including emoji-rich details."""
         attrs = {
             "friendly_name": self._friendly_name,
@@ -90,25 +102,24 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
             emoji = {"Audio": "🎵", "Movie": "🎬", "Episode": "📺"}.get(media_type, "📺")
 
             if media_type == "Audio":
-                phrase = f"{emoji} {user} {self._t('listening_to', 'is listening to')} {artist} – {title}"
+                phrase = f"{emoji} {user} {await self._t('listening_to', 'is listening to')} {artist} – {title}"
             elif media_type == "Episode":
                 series = item.get("SeriesName", "Unknown Series")
                 season = item.get("ParentIndexNumber")
                 episode = item.get("IndexNumber")
                 suffix = f" (S{season:02} E{episode:02})" if season and episode else ""
-                phrase = f"{emoji} {user} {self._t('watching', 'is watching')} {series} – {title}{suffix}"
+                phrase = f"{emoji} {user} {await self._t('watching', 'is watching')} {series} – {title}{suffix}"
             elif media_type == "Movie":
-                phrase = f"{emoji} {user} {self._t('watching', 'is watching')} {title}"
+                phrase = f"{emoji} {user} {await self._t('watching', 'is watching')} {title}"
             else:
-                phrase = f"📺 {user} {self._t('watching', 'is watching')} {title}"
+                phrase = f"📺 {user} {await self._t('watching', 'is watching')} {title}"
 
             playing.append(phrase)
 
         if playing:
             attrs["currently_playing"] = "\n".join(playing)
         else:
-            # Only use idle message if translations are loaded
-            attrs["currently_playing"] = self._t("idle_message", None)
+            attrs["currently_playing"] = await self._t("idle_message", "")
 
         attrs["active_session_count"] = len(active_sessions)
         attrs["audio_session_count"] = sum(1 for _, item, _ in active_sessions if item.get("Type") == "Audio")
