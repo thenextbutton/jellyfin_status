@@ -6,8 +6,9 @@ from .const import DOMAIN
 
 class OptionsFlowHandler(config_entries.OptionsFlow):
     def __init__(self, config_entry):
-        self.config_entry = config_entry
+        super().__init__(config_entry)
         self._translations = {}
+
 
     async def async_step_init(self, user_input=None):
         if user_input is not None:
