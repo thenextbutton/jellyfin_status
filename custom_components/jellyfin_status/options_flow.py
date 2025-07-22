@@ -5,9 +5,7 @@ from homeassistant.helpers.translation import async_get_translations
 from .const import DOMAIN
 
 class OptionsFlowHandler(config_entries.OptionsFlow):
-    def __init__(self, config_entry):
-        super().__init__(config_entry)
-        self._translations = {}
+    _translations = {}
 
 
     async def async_step_init(self, user_input=None):
