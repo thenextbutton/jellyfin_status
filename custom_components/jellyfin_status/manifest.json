@@ -9,5 +9,5 @@
   "iot_class": "local_polling",
   "config_flow": true,
   "is_built_in": false,
-  "translations": ["en", "de", "fr", "es", "zh-Hans", "fr-CA", "de-CH", "ja"]
+  "translations": true
 }
