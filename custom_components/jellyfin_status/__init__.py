@@ -13,7 +13,9 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     def get_opt(key, default=None):
-        return entry.options.get(key) or entry.data.get(key, default)
+        if key in entry.options:
+            return entry.options[key]
+        return entry.data.get(key, default)
 
     host = get_opt("host")
     port = get_opt("port")
@@ -23,6 +25,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     ignore_ssl = get_opt("ignore_ssl", False)
 
     update_interval = None if scan_interval == 0 else timedelta(seconds=scan_interval)
+
+    _LOGGER.info("🔧 Configured scan_interval: %s", scan_interval)
+    _LOGGER.info("⏱️ Polling enabled: %s", update_interval is not None)
 
     coordinator = JellyfinCoordinator(
         hass=hass,
