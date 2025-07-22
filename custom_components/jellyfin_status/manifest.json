@@ -1,7 +1,7 @@
 {
   "domain": "jellyfin_status",
   "name": "Jellyfin Status",
-  "documentation": "https://github.com/thenextbutton/home_assistant/tree/main/hacs/jellyfin_status",
+  "documentation": "https://github.com/thenextbutton/jellyfin_status",
   "dependencies": [],
   "codeowners": ["thenextbutton"],
   "version": "1.0.0",
