@@ -18,9 +18,11 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
             self.hass, self.hass.config.language, f"custom_components.{DOMAIN}"
         )
 
-        # Helper to prefer updated options over original config
+        # Helper to prefer updated options over original config, safely preserving 0/False
         def get_opt(key, default=None):
-            return self.config_entry.options.get(key, self.config_entry.data.get(key, default))
+            if key in self.config_entry.options:
+                return self.config_entry.options[key]
+            return self.config_entry.data.get(key, default)
 
         # Translation shortcut
         def _t(key: str, fallback: str = None) -> str:
