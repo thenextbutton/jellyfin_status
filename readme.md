@@ -51,6 +51,21 @@ custom_components/jellyfin_status/
 
 ---
 
+### 🛠️ Manual Updates
+
+If the **scan interval is set to `0`**, the integration disables automatic polling.  
+This allows you to **manually trigger updates via automation**, such as:
+
+```yaml
+service: homeassistant.update_entity
+target:
+  entity_id: sensor.jellyfin_status
+```
+
+Useful for scheduled syncs, conditional refreshes, or power-saving modes.
+
+---
+
 ## 🌐 Translations
 
 Available languages:
