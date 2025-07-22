@@ -1,0 +1,53 @@
+{
+  "title": "Sensor de reproducción de Jellyfin",
+  "description": "Supervisa las sesiones de reproducción de usuarios en tu servidor Jellyfin.",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Conectar a Jellyfin",
+        "description": "Introduce los datos de conexión para tu servidor Jellyfin."
+      }
+    },
+    "error": {
+      "cannot_connect": "No se puede conectar al servidor Jellyfin.",
+      "invalid_api_key": "La clave API no es válida.",
+      "unknown": "Error inesperado. Intenta de nuevo."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opciones del servidor Jellyfin",
+        "fields": {
+          "server_name": {
+            "name": "Nombre para mostrar del servidor",
+            "description": "Se usa en la interfaz y en las tarjetas del tablero."
+          },
+          "scan_interval": {
+            "name": "Intervalo de escaneo (segundos)"
+          },
+          "use_https": {
+            "name": "Usar HTTPS"
+          },
+          "ignore_ssl": {
+            "name": "Ignorar errores SSL"
+          },
+          "host": {
+            "name": "Host del servidor"
+          },
+          "port": {
+            "name": "Puerto del servidor"
+          },
+          "api_key": {
+            "name": "Clave API de Jellyfin"
+          }
+        }
+      }
+    },
+    "sensor": {
+      "watching": "está viendo",
+      "listening_to": "está escuchando",
+      "idle_message": "😴 Inactivo — no hay nada reproduciéndose"
+    }
+  }
+}

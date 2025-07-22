@@ -1,0 +1,53 @@
+{
+  "title": "Jellyfin再生センサー",
+  "description": "Jellyfinサーバー上のユーザー再生セッションを追跡します。",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Jellyfinに接続",
+        "description": "Jellyfinサーバーの接続情報を入力してください。"
+      }
+    },
+    "error": {
+      "cannot_connect": "Jellyfinサーバーに接続できません。",
+      "invalid_api_key": "APIキーが無効です。",
+      "unknown": "予期しないエラーが発生しました。もう一度お試しください。"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Jellyfinサーバーのオプション",
+        "fields": {
+          "server_name": {
+            "name": "サーバー表示名",
+            "description": "UIやダッシュボードカードで使用されます。"
+          },
+          "scan_interval": {
+            "name": "スキャン間隔（秒）"
+          },
+          "use_https": {
+            "name": "HTTPSを使用"
+          },
+          "ignore_ssl": {
+            "name": "SSLエラーを無視"
+          },
+          "host": {
+            "name": "サーバーホスト"
+          },
+          "port": {
+            "name": "サーバーポート"
+          },
+          "api_key": {
+            "name": "Jellyfin APIキー"
+          }
+        }
+      }
+    },
+    "sensor": {
+      "watching": "視聴中",
+      "listening_to": "再生中",
+      "idle_message": "😴 アイドル状態 — 再生されているコンテンツはありません"
+    }
+  }
+}

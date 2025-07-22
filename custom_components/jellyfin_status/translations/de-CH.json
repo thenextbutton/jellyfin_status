@@ -1,0 +1,54 @@
+{
+    "title": "Jellyfin Wiedergabe-Sensor",
+    "description": "Verfolge Benutzerwiedergaben auf deinem Jellyfin-Server.",
+    "config": {
+      "step": {
+        "user": {
+          "title": "Mit Jellyfin verbinden",
+          "description": "Gib die Verbindungsinformationen zu deinem Jellyfin-Server ein."
+        }
+      },
+      "error": {
+        "cannot_connect": "Keine Verbindung zum Jellyfin-Server möglich.",
+        "invalid_api_key": "Der API-Schlüssel ist ungültig.",
+        "unknown": "Unerwarteter Fehler. Bitte nochmals versuchen."
+      }
+    },
+    "options": {
+      "step": {
+        "init": {
+          "title": "Jellyfin Server-Optionen",
+          "fields": {
+            "server_name": {
+              "name": "Server-Anzeigename",
+              "description": "Wird in der Benutzeroberfläche und in Dashboard-Karten verwendet."
+            },
+            "scan_interval": {
+              "name": "Scanintervall (Sekunden)"
+            },
+            "use_https": {
+              "name": "HTTPS verwenden"
+            },
+            "ignore_ssl": {
+              "name": "SSL-Fehler ignorieren"
+            },
+            "host": {
+              "name": "Serverhost"
+            },
+            "port": {
+              "name": "Serverport"
+            },
+            "api_key": {
+              "name": "Jellyfin API-Schlüssel"
+            }
+          }
+        }
+      },
+      "sensor": {
+        "watching": "schaut",
+        "listening_to": "hört",
+        "idle_message": "😴 Leerlauf — aktuell keine Wiedergabe"
+      }
+    }
+  }
+  

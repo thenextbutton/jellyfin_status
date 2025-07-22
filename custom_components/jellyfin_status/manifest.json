@@ -1,0 +1,13 @@
+{
+  "domain": "jellyfin_status",
+  "name": "Jellyfin Status",
+  "documentation": "https://github.com/thenextbutton/home_assistant/tree/main/hacs/jellyfin_status",
+  "dependencies": [],
+  "codeowners": ["thenextbutton"],
+  "version": "1.0.0",
+  "requirements": ["aiohttp"],
+  "iot_class": "local_polling",
+  "config_flow": true,
+  "is_built_in": false,
+  "translations": ["en", "de", "fr", "es", "zh-Hans", "fr-CA", "de-CH", "ja"]
+}

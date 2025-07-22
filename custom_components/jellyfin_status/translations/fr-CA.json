@@ -1,0 +1,53 @@
+{
+  "title": "Capteur de lecture Jellyfin",
+  "description": "Suivez les sessions de lecture des utilisateurs sur votre serveur Jellyfin.",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connexion à Jellyfin",
+        "description": "Fournissez les infos de connexion à votre serveur Jellyfin."
+      }
+    },
+    "error": {
+      "cannot_connect": "Connexion au serveur Jellyfin impossible.",
+      "invalid_api_key": "La clé API est invalide.",
+      "unknown": "Erreur inattendue. Veuillez réessayer."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Options du serveur Jellyfin",
+        "fields": {
+          "server_name": {
+            "name": "Nom affiché du serveur",
+            "description": "Utilisé dans l’interface et les cartes du tableau de bord."
+          },
+          "scan_interval": {
+            "name": "Intervalle de balayage (secondes)"
+          },
+          "use_https": {
+            "name": "Utiliser HTTPS"
+          },
+          "ignore_ssl": {
+            "name": "Ignorer les erreurs SSL"
+          },
+          "host": {
+            "name": "Hôte du serveur"
+          },
+          "port": {
+            "name": "Port du serveur"
+          },
+          "api_key": {
+            "name": "Clé API Jellyfin"
+          }
+        }
+      }
+    },
+    "sensor": {
+      "watching": "regarde",
+      "listening_to": "écoute",
+      "idle_message": "😴 Inactif — aucun contenu n’est en lecture"
+    }
+  }
+}

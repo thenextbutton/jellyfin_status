@@ -1,0 +1,1 @@
+DOMAIN = "jellyfin_status"

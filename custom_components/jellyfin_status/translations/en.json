@@ -1,0 +1,53 @@
+{
+  "title": "Jellyfin Playback Sensor",
+  "description": "Track user playback sessions from your Jellyfin server.",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Jellyfin",
+        "description": "Enter connection details for your Jellyfin server."
+      }
+    },
+    "error": {
+      "cannot_connect": "Unable to connect to Jellyfin server.",
+      "invalid_api_key": "The API key is invalid.",
+      "unknown": "Unexpected error. Please try again."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Jellyfin Server Options",
+        "fields": {
+          "server_name": {
+            "name": "Server display name",
+            "description": "Used in UI and dashboard cards."
+          },
+          "scan_interval": {
+            "name": "Scan interval (seconds)"
+          },
+          "use_https": {
+            "name": "Use HTTPS"
+          },
+          "ignore_ssl": {
+            "name": "Ignore SSL errors"
+          },
+          "host": {
+            "name": "Server host"
+          },
+          "port": {
+            "name": "Server port"
+          },
+          "api_key": {
+            "name": "Jellyfin API key"
+          }
+        }
+      }
+    },
+    "sensor": {
+      "watching": "is watching",
+      "listening_to": "is listening to",
+      "idle_message": "😴 Idle — nothing to see here"
+    }
+  }
+}

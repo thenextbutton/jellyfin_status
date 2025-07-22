@@ -1,0 +1,53 @@
+{
+  "title": "Jellyfin 播放传感器",
+  "description": "追踪 Jellyfin 服务器上的用户播放会话。",
+  "config": {
+    "step": {
+      "user": {
+        "title": "连接到 Jellyfin",
+        "description": "请输入 Jellyfin 服务器的连接信息。"
+      }
+    },
+    "error": {
+      "cannot_connect": "无法连接到 Jellyfin 服务器。",
+      "invalid_api_key": "API 密钥无效。",
+      "unknown": "发生意外错误。请重试。"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Jellyfin 服务器选项",
+        "fields": {
+          "server_name": {
+            "name": "服务器显示名称",
+            "description": "用于用户界面和仪表板卡片。"
+          },
+          "scan_interval": {
+            "name": "扫描间隔（秒）"
+          },
+          "use_https": {
+            "name": "使用 HTTPS"
+          },
+          "ignore_ssl": {
+            "name": "忽略 SSL 错误"
+          },
+          "host": {
+            "name": "服务器主机"
+          },
+          "port": {
+            "name": "服务器端口"
+          },
+          "api_key": {
+            "name": "Jellyfin API 密钥"
+          }
+        }
+      }
+    },
+    "sensor": {
+      "watching": "正在观看",
+      "listening_to": "正在收听",
+      "idle_message": "😴 空闲 — 当前没有播放内容"
+    }
+  }
+}
