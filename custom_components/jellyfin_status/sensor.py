@@ -20,6 +20,7 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
 
         self._attr_name = f"{server_name} Status"
         self._attr_unique_id = f"jellyfin_status_{slug}"
+        self._attr_should_poll = False  # Coordinator handles updates
         self._friendly_name = self._attr_name
         self._translations = {}
         self._language = None
@@ -31,6 +32,10 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
             self.hass, self._language, f"custom_components.{DOMAIN}"
         )
         _LOGGER.debug("Loaded translations for language: %s", self._language)
+
+    def _handle_coordinator_update(self) -> None:
+        """Called when coordinator provides updated data."""
+        self.async_write_ha_state()
 
     def _t(self, key: str, fallback: str = None) -> str:
         """Fetch translated string by key from sensor section."""
