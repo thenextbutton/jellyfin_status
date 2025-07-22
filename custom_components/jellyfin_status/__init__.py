@@ -12,7 +12,6 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     return True
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-
     def get_opt(key, default=None):
         return entry.options.get(key) or entry.data.get(key, default)
 
@@ -26,7 +25,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     update_interval = None if scan_interval == 0 else timedelta(seconds=scan_interval)
 
     coordinator = JellyfinCoordinator(
-        hass,
+        hass=hass,
         api_key=api_key,
         address=f"{host}:{port}",
         update_interval=update_interval,
@@ -37,8 +36,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     await coordinator.async_config_entry_first_refresh()
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
 
-    coordinator._schedule_refresh()
-    
     async def handle_refresh(call):
         await coordinator.async_request_refresh()
 
