@@ -1,12 +1,10 @@
 from homeassistant import config_entries
 import voluptuous as vol
 from homeassistant.helpers.translation import async_get_translations
-
 from .const import DOMAIN
 
 class OptionsFlowHandler(config_entries.OptionsFlow):
     _translations = {}
-
 
     async def async_step_init(self, user_input=None):
         if user_input is not None:
