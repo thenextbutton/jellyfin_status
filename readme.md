@@ -41,8 +41,8 @@ custom_components/jellyfin_status/
 
 ## 🧩 Configuration
 
-1. 
-2. 
+1. Go to **Settings → Devices & Services**  
+2. Click **Add Integration** → select `Jellyfin Status` 
 3. Fill in:  
    - Host and Port  
    - API key  
