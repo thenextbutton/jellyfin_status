@@ -1,12 +1,15 @@
 from datetime import timedelta
+import logging
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.typing import ConfigType
+from homeassistant.helpers import config_validation as cv
 from .coordinator import JellyfinCoordinator
 from .const import DOMAIN
-import logging
 
 _LOGGER = logging.getLogger(__name__)
+
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     return True
