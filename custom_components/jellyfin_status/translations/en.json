@@ -8,56 +8,34 @@
       }
     },
     "error": {
-      "invalid_input": {
-        "description": "Please enter a valid host and API key."
-      },
-      "invalid_api_key": {
-        "description": "Authentication failed — check your API key."
-      },
-      "cannot_connect": {
-        "description": "Unable to connect to the Jellyfin server."
-      },
-      "unknown": {
-        "description": "An unknown error occurred. Please check your logs."
-      },
-      "duplicate_server_name": {
-        "description": "A server with this name already exists. Please choose a unique name."
-      }
+      "invalid_input": "Please enter a valid host and API key.",
+      "invalid_api_key": "Authentication failed — check your API key.",
+      "cannot_connect": "Unable to connect to the Jellyfin server.",
+      "unknown": "An unknown error occurred. Please check your logs.",
+      "duplicate_server_name": "A server with this name already exists. Please choose a unique name."
     }
   },
   "options": {
     "step": {
       "init": {
         "title": "Jellyfin Server Options",
-        "fields": {
-          "server_name": {
-            "name": "Server Name",
-            "description": "Used in UI and dashboard cards."
-          },
-          "scan_interval": {
-            "name": "Scan Interval (seconds)",
-            "description": "Polling interval in seconds"
-          },
-          "use_https": {
-            "name": "Use HTTPS",
-            "description": "Connect securely using HTTPS"
-          },
-          "ignore_ssl": {
-            "name": "Ignore SSL Errors",
-            "description": "Skip SSL certificate verification"
-          },
-          "host": {
-            "name": "Host",
-            "description": "Address of your Jellyfin server"
-          },
-          "port": {
-            "name": "Port",
-            "description": "Port number Jellyfin is running on"
-          },
-          "api_key": {
-            "name": "API Key",
-            "description": "Your Jellyfin API key for authentication"
-          }
+        "data": {
+          "server_name": "Server Name",
+          "scan_interval": "Scan Interval (seconds)",
+          "use_https": "Use HTTPS",
+          "ignore_ssl": "Ignore SSL Errors",
+          "host": "Host",
+          "port": "Port",
+          "api_key": "API Key"
+        },
+        "description": {
+          "server_name": "Used in UI and dashboard cards.",
+          "scan_interval": "Polling interval in seconds",
+          "use_https": "Connect securely using HTTPS",
+          "ignore_ssl": "Skip SSL certificate verification",
+          "host": "Address of your Jellyfin server",
+          "port": "Port number Jellyfin is running on",
+          "api_key": "Your Jellyfin API key for authentication"
         }
       }
     }
