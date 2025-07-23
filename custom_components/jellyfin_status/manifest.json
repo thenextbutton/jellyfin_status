@@ -3,7 +3,7 @@
   "name": "Jellyfin Status",
   "documentation": "https://github.com/thenextbutton/jellyfin_status",
   "dependencies": [],
-  "codeowners": ["thenextbutton"],
+  "codeowners": ["@thenextbutton"],
   "version": "1.0.0",
   "requirements": ["aiohttp"],
   "iot_class": "local_polling",
