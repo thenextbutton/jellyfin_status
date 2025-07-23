@@ -23,6 +23,9 @@
       },
       "unknown": {
         "description": "Unexpected error occurred."
+      },
+      "duplicate_server_name": {
+        "description": "Duplicate server name"
       }
     }
   },

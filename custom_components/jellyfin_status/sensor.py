@@ -6,8 +6,19 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.helpers.translation import async_get_translations
 from .const import DOMAIN
 import logging
+import os
+import aiofiles.os
 
 _LOGGER = logging.getLogger(__name__)
+
+async def async_list_translation_files():
+    path = os.path.join(os.path.dirname(__file__), "translations")
+    try:
+        files = await aiofiles.os.listdir(path)
+        return [f for f in files if f.endswith(".json")]
+    except Exception as e:
+        _LOGGER.warning("Failed to list translation files: %s", e)
+        return []
 
 class JellyfinSensor(CoordinatorEntity, SensorEntity):
     """Sensor entity that reports Jellyfin playback activity and user sessions."""
@@ -20,7 +31,7 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
 
         self._attr_name = f"{server_name} Status"
         self._attr_unique_id = f"jellyfin_status_{slug}"
-        self._attr_should_poll = False  # Coordinator handles updates
+        self._attr_should_poll = False
         self._friendly_name = self._attr_name
         self._translations = {}
         self._language = None
@@ -31,9 +42,13 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
         self._translations = await async_get_translations(
             self.hass, self._language, f"custom_components.{DOMAIN}"
         )
-        _LOGGER.debug("Loaded translations for language: %s", self._language)
 
-        # Subscribe to updates and request an immediate refresh
+        translation_files = await async_list_translation_files()
+        _LOGGER.debug("📁 Available translation files: %s", translation_files)
+        _LOGGER.debug("Loaded translations for language: %s", self._language)
+        _LOGGER.debug("Translation keys available: %s", list(self._translations))
+        _LOGGER.debug("sensor.idle_message → %s", self._translations.get("sensor.idle_message"))
+
         self.coordinator.async_add_listener(self._handle_coordinator_update)
         await self.coordinator.async_request_refresh()
 
@@ -72,7 +87,7 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
             "friendly_name": self._friendly_name,
             "polling_enabled": self.coordinator.update_interval is not None,
             "polling_interval_seconds": int(self.coordinator.update_interval.total_seconds()) if self.coordinator.update_interval else 0,
-            "last_updated": self.coordinator.last_updated,
+            "last_updated": self.coordinator.last_updated
         }
 
         sessions = self.coordinator.data or []

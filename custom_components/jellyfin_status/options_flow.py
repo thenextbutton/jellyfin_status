@@ -1,42 +1,28 @@
 from homeassistant import config_entries
 import voluptuous as vol
-from homeassistant.helpers.translation import async_get_translations
 from .const import DOMAIN
 
 class OptionsFlowHandler(config_entries.OptionsFlow):
-    _translations = {}
+    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
+        """Initialize Jellyfin options flow."""
+        self.config_entry = config_entry
 
     async def async_step_init(self, user_input=None):
-        if user_input is not None:
-            return self.async_create_entry(title="", data=user_input)
-
-        # Load translations for form labels and tooltips
-        self._translations = await async_get_translations(
-            self.hass, self.hass.config.language, f"custom_components.{DOMAIN}"
-        )
-
         # Helper to prefer updated options over original config, safely preserving 0/False
         def get_opt(key, default=None):
             if key in self.config_entry.options:
                 return self.config_entry.options[key]
             return self.config_entry.data.get(key, default)
 
-        # Translation shortcut
-        def _t(key: str, fallback: str = None) -> str:
-            return self._translations.get(f"config.{key}", fallback or key)
+        if user_input is not None:
+            # 🚫 Ensure server_name is retained unmodified
+            user_input["server_name"] = get_opt("server_name")
+            return self.async_create_entry(title="", data=user_input)
 
-        # Option form
+        # 📝 Option form schema (server_name omitted to hide from UI)
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema({
-                vol.Optional(
-                    "server_name",
-                    default=get_opt("server_name", self.config_entry.title),
-                    description={
-                        "suggested_value": get_opt("server_name"),
-                        "translation_key": "server_name"
-                    }
-                ): str,
                 vol.Required(
                     "host",
                     default=get_opt("host"),
@@ -87,7 +73,6 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                 ): bool
             }),
             description_placeholders={
-                "server_name": get_opt("server_name"),
                 "host": get_opt("host")
             }
         )
