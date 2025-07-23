@@ -35,19 +35,5 @@
       "name": "Ignorar errores SSL",
       "description": "Omitir la verificación de certificado SSL"
     }
-  },
-  "sensor": {
-    "idle_message": "😴 Nada se está reproduciendo actualmente",
-    "watching": "está viendo",
-    "listening_to": "está escuchando",
-    "active_session_count": "Número de sesiones activas",
-    "audio_session_count": "Sesiones reproduciendo audio",
-    "episode_session_count": "Sesiones viendo episodios",
-    "movie_session_count": "Sesiones viendo películas",
-    "currently_playing": "Qué están reproduciendo los usuarios",
-    "polling_enabled": "Sondeo habilitado",
-    "polling_interval_seconds": "Intervalo de sondeo",
-    "last_updated": "Última actualización",
-    "friendly_name": "Nombre del sensor"
   }
 }

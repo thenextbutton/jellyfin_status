@@ -1,0 +1,18 @@
+{
+  "state": {},
+  "entity": {},
+  "sensor": {
+    "idle_message": "😴 Rien n’est en lecture pour le moment",
+    "watching": "regarde",
+    "listening_to": "écoute",
+    "active_session_count": "Nombre de sessions actives",
+    "audio_session_count": "Sessions audio en cours",
+    "episode_session_count": "Sessions regardant des épisodes",
+    "movie_session_count": "Sessions regardant des films",
+    "currently_playing": "Contenu en lecture par les utilisateurs",
+    "polling_enabled": "Sondage activé",
+    "polling_interval_seconds": "Intervalle de sondage",
+    "last_updated": "Dernière mise à jour",
+    "friendly_name": "Nom du capteur"
+  }
+}

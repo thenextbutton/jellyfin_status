@@ -35,19 +35,5 @@
       "name": "SSL-Fehler ignorieren",
       "description": "SSL-Zertifikatsprüfung überspringen"
     }
-  },
-  "sensor": {
-    "idle_message": "😴 Momentan wird nichts abgespielt",
-    "watching": "schaut",
-    "listening_to": "hört",
-    "active_session_count": "Anzahl aktiver Sitzungen",
-    "audio_session_count": "Sitzungen mit Audiowiedergabe",
-    "episode_session_count": "Sitzungen mit Episodenwiedergabe",
-    "movie_session_count": "Sitzungen mit Filmwiedergabe",
-    "currently_playing": "Was Benutzer gerade abspielen",
-    "polling_enabled": "Abfrage aktiviert",
-    "polling_interval_seconds": "Abfrageintervall",
-    "last_updated": "Zuletzt aktualisiert",
-    "friendly_name": "Sensorname"
   }
 }

@@ -35,19 +35,5 @@
       "name": "Ignore SSL Errors",
       "description": "Skip SSL certificate verification"
     }
-  },
-  "sensor": {
-    "idle_message": "😴 Nothing is currently playing",
-    "watching": "is watching",
-    "listening_to": "is listening to",
-    "active_session_count": "Number of active sessions",
-    "audio_session_count": "Sessions playing audio",
-    "episode_session_count": "Sessions watching episodes",
-    "movie_session_count": "Sessions watching movies",
-    "currently_playing": "What users are currently playing",
-    "polling_enabled": "Polling enabled",
-    "polling_interval_seconds": "Polling interval",
-    "last_updated": "Last updated timestamp",
-    "friendly_name": "Sensor name"
   }
 }

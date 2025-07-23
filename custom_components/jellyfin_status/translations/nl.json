@@ -35,19 +35,5 @@
       "name": "SSL-fouten negeren",
       "description": "SSL-certificaatcontrole overslaan"
     }
-  },
-  "sensor": {
-    "idle_message": "😴 Er wordt momenteel niets afgespeeld",
-    "watching": "kijkt naar",
-    "listening_to": "luistert naar",
-    "active_session_count": "Aantal actieve sessies",
-    "audio_session_count": "Sessies met audio",
-    "episode_session_count": "Sessies met afleveringen",
-    "movie_session_count": "Sessies met films",
-    "currently_playing": "Wat gebruikers momenteel afspelen",
-    "polling_enabled": "Polling ingeschakeld",
-    "polling_interval_seconds": "Polling-interval",
-    "last_updated": "Laatst bijgewerkt",
-    "friendly_name": "Sensornaam"
   }
 }
