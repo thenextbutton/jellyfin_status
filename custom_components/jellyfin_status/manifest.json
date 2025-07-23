@@ -1,11 +1,11 @@
 {
   "domain": "jellyfin_status",
   "name": "Jellyfin Status",
-  "documentation": "https://github.com/thenextbutton/jellyfin_status",
-  "dependencies": [],
   "codeowners": ["@thenextbutton"],
-  "version": "1.0.0",
-  "requirements": ["aiohttp"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/thenextbutton/jellyfin_status",
   "iot_class": "local_polling",
-  "config_flow": true
+  "requirements": ["aiohttp"],
+  "version": "1.0.0"
 }
