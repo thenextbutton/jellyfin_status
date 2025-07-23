@@ -90,9 +90,9 @@ Sensor phrases like `is watching`, `is listening to`, and `Idle — nothing to s
 Example output:
 ```yaml
 currently_playing: |
-  🎬 Alice is watching Interstellar
-  📺 Bob is watching The Office – Threat Level Midnight (S07 E17)
-  🎵 Charlie is listening to Daft Punk – Instant Crush
+  🎬 Bart is watching Interstellar
+  📺 Homer is watching Wednesday – Wednesday's Child Is Full of Woe (S01 E01)
+  🎵 Marge is listening to Britney Spears – Oops!…I Did It Again
 
 active_session_count: 3
 audio_session_count: 1
@@ -101,6 +101,12 @@ episode_session_count: 1
 polling_enabled: true
 last_updated: 2025-07-22T20:43:19Z
 ```
+
+
+
+
+<img height="500" alt="image" src="https://github.com/user-attachments/assets/695d208f-40f0-4078-a786-89a1045d517b" />
+
 
 ---
 
