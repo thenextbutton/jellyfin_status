@@ -11,6 +11,5 @@
   "is_built_in": false,
   "translations": true,
   "options": {
-    "reload_on_update": true
   }
 }
