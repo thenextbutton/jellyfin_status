@@ -1,0 +1,107 @@
+{
+  "title": {
+    "config": {
+      "name": "Jellyfin Playback Sensor"
+    }
+  },
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Jellyfin",
+        "description": "Enter connection details for your Jellyfin server."
+      }
+    },
+    "error": {
+      "invalid_input": {
+        "description": "Missing or invalid input."
+      },
+      "invalid_api_key": {
+        "description": "Authentication failed — check your API key."
+      },
+      "cannot_connect": {
+        "description": "Unable to connect to Jellyfin server."
+      },
+      "unknown": {
+        "description": "Unexpected error occurred."
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Jellyfin Server Options",
+        "fields": {
+          "server_name": {
+            "name": "Server display name",
+            "description": "Used in UI and dashboard cards."
+          },
+          "scan_interval": {
+            "name": "Scan interval (seconds)"
+          },
+          "use_https": {
+            "name": "Use HTTPS"
+          },
+          "ignore_ssl": {
+            "name": "Ignore SSL errors"
+          },
+          "host": {
+            "name": "Server host"
+          },
+          "port": {
+            "name": "Server port"
+          },
+          "api_key": {
+            "name": "Jellyfin API key"
+          }
+        }
+      }
+    }
+  },
+  "sensor": {
+    "idle_message": {
+      "description": "Message shown when no media is playing"
+    },
+    "watching": {
+      "description": "Text for users currently watching media"
+    },
+    "listening_to": {
+      "description": "Text for users currently listening to audio"
+    },
+    "debug_marker": {
+      "description": "Developer-only string for translation loading test"
+    },
+    "active_session_count": {
+      "description": "Number of active playback sessions"
+    },
+    "audio_session_count": {
+      "description": "Audio sessions"
+    },
+    "episode_session_count": {
+      "description": "Episode sessions"
+    },
+    "movie_session_count": {
+      "description": "Movie sessions"
+    },
+    "currently_playing": {
+      "description": "What users are currently watching or listening to"
+    },
+    "language": {
+      "description": "Current Home Assistant language code"
+    },
+    "loaded_translation": {
+      "description": "Translation string loaded for idle state"
+    },
+    "polling_enabled": {
+      "description": "Whether polling is active"
+    },
+    "polling_interval_seconds": {
+      "description": "Polling interval in seconds"
+    },
+    "last_updated": {
+      "description": "Timestamp of last update"
+    },
+    "friendly_name": {
+      "description": "Sensor’s display name"
+    }
+  }
+}
