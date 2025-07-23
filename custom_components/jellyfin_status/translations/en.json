@@ -1,12 +1,30 @@
 {
   "title": "Jellyfin Playback Sensor",
-  "config.step.user.title": "Connect to Jellyfin",
-  "config.step.user.description": "Enter connection details for your Jellyfin server.",
-  "config.error.invalid_input": "Please enter a valid host and API key.",
-  "config.error.invalid_api_key": "Authentication failed — check your API key.",
-  "config.error.cannot_connect": "Unable to connect to the Jellyfin server.",
-  "config.error.unknown": "An unknown error occurred. Please check your logs.",
-  "config.error.duplicate_server_name": "A server with this name already exists. Please choose a unique name.",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Jellyfin",
+        "description": "Enter connection details for your Jellyfin server."
+      }
+    },
+    "error": {
+      "invalid_input": {
+        "description": "Please enter a valid host and API key."
+      },
+      "invalid_api_key": {
+        "description": "Authentication failed — check your API key."
+      },
+      "cannot_connect": {
+        "description": "Unable to connect to the Jellyfin server."
+      },
+      "unknown": {
+        "description": "An unknown error occurred. Please check your logs."
+      },
+      "duplicate_server_name": {
+        "description": "A server with this name already exists. Please choose a unique name."
+      }
+    }
+  },
   "options.step.init.title": "Jellyfin Server Options",
   "options.server_name": "Server Name",
   "options.server_name.description": "Used in UI and dashboard cards.",
