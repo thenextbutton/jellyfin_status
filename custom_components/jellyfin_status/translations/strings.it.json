@@ -1,0 +1,21 @@
+{
+  "state": {},
+  "entity": {},
+  "sensor": {
+    "idle_message": "😴 Nessuna riproduzione in corso",
+    "watching": "sta guardando",
+    "listening_to": "sta ascoltando",
+    "debug_marker": "Segnaposto di debug",
+    "active_session_count": "Numero di sessioni attive",
+    "audio_session_count": "Sessioni con audio in riproduzione",
+    "episode_session_count": "Sessioni che guardano episodi",
+    "movie_session_count": "Sessioni che guardano film",
+    "currently_playing": "Contenuti attualmente in riproduzione",
+    "language": "Codice lingua corrente",
+    "loaded_translation": "Traduzione caricata per stato inattivo",
+    "polling_enabled": "Polling attivo",
+    "polling_interval_seconds": "Intervallo di polling",
+    "last_updated": "Ultimo aggiornamento",
+    "friendly_name": "Nome del sensore"
+  }
+}

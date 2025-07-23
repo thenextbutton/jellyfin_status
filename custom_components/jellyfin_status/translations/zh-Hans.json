@@ -1,0 +1,39 @@
+{
+  "config": {
+    "error": {
+      "invalid_input": "请输入有效的主机地址和 API 密钥。",
+      "invalid_api_key": "身份验证失败，请检查您的 API 密钥。",
+      "cannot_connect": "无法连接到 Jellyfin 服务器。",
+      "unknown": "发生未知错误，请查看日志。",
+      "duplicate_server_name": "已存在具有该名称的服务器。请选择唯一名称。"
+    },
+    "server_name": {
+      "name": "服务器名称",
+      "description": "此 Jellyfin 服务器的自定义名称"
+    },
+    "host": {
+      "name": "主机地址",
+      "description": "Jellyfin 服务器的地址"
+    },
+    "port": {
+      "name": "端口",
+      "description": "Jellyfin 所使用的端口号"
+    },
+    "api_key": {
+      "name": "API 密钥",
+      "description": "用于身份验证的 Jellyfin API 密钥"
+    },
+    "scan_interval": {
+      "name": "扫描间隔",
+      "description": "轮询间隔（秒）"
+    },
+    "use_https": {
+      "name": "使用 HTTPS",
+      "description": "通过 HTTPS 安全连接"
+    },
+    "ignore_ssl": {
+      "name": "忽略 SSL 错误",
+      "description": "跳过 SSL 证书验证"
+    }
+  }
+}

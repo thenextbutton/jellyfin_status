@@ -1,0 +1,39 @@
+{
+  "config": {
+    "error": {
+      "invalid_input": "Inserisci un host e una chiave API validi.",
+      "invalid_api_key": "Autenticazione fallita — controlla la tua chiave API.",
+      "cannot_connect": "Impossibile connettersi al server Jellyfin.",
+      "unknown": "Si è verificato un errore sconosciuto. Controlla i log.",
+      "duplicate_server_name": "Esiste già un server con questo nome. Scegli un nome univoco."
+    },
+    "server_name": {
+      "name": "Nome del server",
+      "description": "Nome personalizzato per questo server Jellyfin"
+    },
+    "host": {
+      "name": "Host",
+      "description": "Indirizzo del tuo server Jellyfin"
+    },
+    "port": {
+      "name": "Porta",
+      "description": "Numero di porta su cui è in esecuzione Jellyfin"
+    },
+    "api_key": {
+      "name": "Chiave API",
+      "description": "La tua chiave API Jellyfin per l'autenticazione"
+    },
+    "scan_interval": {
+      "name": "Intervallo di scansione",
+      "description": "Intervallo di polling (in secondi)"
+    },
+    "use_https": {
+      "name": "Usa HTTPS",
+      "description": "Connetti in modo sicuro utilizzando HTTPS"
+    },
+    "ignore_ssl": {
+      "name": "Ignora errori SSL",
+      "description": "Salta la verifica del certificato SSL"
+    }
+  }
+}
