@@ -1,53 +1,53 @@
 {
-  "title": "Jellyfin Wiedergabe-Sensor",
-  "description": "Verfolge die Wiedergabesitzungen von Benutzern auf deinem Jellyfin-Server.",
   "config": {
-    "step": {
-      "user": {
-        "title": "Mit Jellyfin verbinden",
-        "description": "Gib die Verbindungsdetails für deinen Jellyfin-Server ein."
-      }
-    },
     "error": {
-      "cannot_connect": "Verbindung zum Jellyfin-Server fehlgeschlagen.",
-      "invalid_api_key": "Der API-Schlüssel ist ungültig.",
-      "unknown": "Unerwarteter Fehler. Bitte erneut versuchen."
+      "invalid_input": "Bitte geben Sie einen gültigen Host und API-Schlüssel ein.",
+      "invalid_api_key": "Authentifizierung fehlgeschlagen – überprüfen Sie Ihren API-Schlüssel.",
+      "cannot_connect": "Verbindung zum Jellyfin-Server nicht möglich.",
+      "unknown": "Ein unbekannter Fehler ist aufgetreten. Bitte prüfen Sie Ihre Logs.",
+      "duplicate_server_name": "Ein Server mit diesem Namen existiert bereits. Bitte wählen Sie einen eindeutigen Namen."
+    },
+    "server_name": {
+      "name": "Servername",
+      "description": "Benutzerdefinierter Name für diesen Jellyfin-Server"
+    },
+    "host": {
+      "name": "Host",
+      "description": "Adresse Ihres Jellyfin-Servers"
+    },
+    "port": {
+      "name": "Port",
+      "description": "Portnummer, auf der Jellyfin läuft"
+    },
+    "api_key": {
+      "name": "API-Schlüssel",
+      "description": "Ihr Jellyfin-API-Schlüssel für die Authentifizierung"
+    },
+    "scan_interval": {
+      "name": "Scanintervall",
+      "description": "Abfrageintervall in Sekunden"
+    },
+    "use_https": {
+      "name": "HTTPS verwenden",
+      "description": "Sichere Verbindung mit HTTPS herstellen"
+    },
+    "ignore_ssl": {
+      "name": "SSL-Fehler ignorieren",
+      "description": "SSL-Zertifikatsprüfung überspringen"
     }
   },
-  "options": {
-    "step": {
-      "init": {
-        "title": "Jellyfin Server-Optionen",
-        "fields": {
-          "server_name": {
-            "name": "Server-Anzeigename",
-            "description": "Wird in der Benutzeroberfläche und in Dashboard-Karten verwendet."
-          },
-          "scan_interval": {
-            "name": "Scan-Intervall (Sekunden)"
-          },
-          "use_https": {
-            "name": "HTTPS verwenden"
-          },
-          "ignore_ssl": {
-            "name": "SSL-Fehler ignorieren"
-          },
-          "host": {
-            "name": "Server-Host"
-          },
-          "port": {
-            "name": "Server-Port"
-          },
-          "api_key": {
-            "name": "Jellyfin API-Schlüssel"
-          }
-        }
-      }
-    },
-    "sensor": {
-      "watching": "schaut",
-      "listening_to": "hört",
-      "idle_message": "😴 Leerlauf — nichts läuft gerade"
-    }
+  "sensor": {
+    "idle_message": "😴 Momentan wird nichts abgespielt",
+    "watching": "schaut",
+    "listening_to": "hört",
+    "active_session_count": "Anzahl aktiver Sitzungen",
+    "audio_session_count": "Sitzungen mit Audiowiedergabe",
+    "episode_session_count": "Sitzungen mit Episodenwiedergabe",
+    "movie_session_count": "Sitzungen mit Filmwiedergabe",
+    "currently_playing": "Was Benutzer gerade abspielen",
+    "polling_enabled": "Abfrage aktiviert",
+    "polling_interval_seconds": "Abfrageintervall",
+    "last_updated": "Zuletzt aktualisiert",
+    "friendly_name": "Sensorname"
   }
 }

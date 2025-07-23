@@ -1,0 +1,53 @@
+{
+  "config": {
+    "error": {
+      "invalid_input": "Voer een geldige host en API-sleutel in.",
+      "invalid_api_key": "Authenticatie mislukt — controleer je API-sleutel.",
+      "cannot_connect": "Kan geen verbinding maken met de Jellyfin-server.",
+      "unknown": "Er is een onbekende fout opgetreden. Controleer je logboeken.",
+      "duplicate_server_name": "Er bestaat al een server met deze naam. Kies een unieke naam."
+    },
+    "server_name": {
+      "name": "Servernaam",
+      "description": "Aangepaste naam voor deze Jellyfin-server"
+    },
+    "host": {
+      "name": "Host",
+      "description": "Adres van je Jellyfin-server"
+    },
+    "port": {
+      "name": "Poort",
+      "description": "Poortnummer waarop Jellyfin draait"
+    },
+    "api_key": {
+      "name": "API-sleutel",
+      "description": "Je Jellyfin API-sleutel voor authenticatie"
+    },
+    "scan_interval": {
+      "name": "Scaninterval",
+      "description": "Polling-interval in seconden"
+    },
+    "use_https": {
+      "name": "HTTPS gebruiken",
+      "description": "Beveiligde verbinding via HTTPS"
+    },
+    "ignore_ssl": {
+      "name": "SSL-fouten negeren",
+      "description": "SSL-certificaatcontrole overslaan"
+    }
+  },
+  "sensor": {
+    "idle_message": "😴 Er wordt momenteel niets afgespeeld",
+    "watching": "kijkt naar",
+    "listening_to": "luistert naar",
+    "active_session_count": "Aantal actieve sessies",
+    "audio_session_count": "Sessies met audio",
+    "episode_session_count": "Sessies met afleveringen",
+    "movie_session_count": "Sessies met films",
+    "currently_playing": "Wat gebruikers momenteel afspelen",
+    "polling_enabled": "Polling ingeschakeld",
+    "polling_interval_seconds": "Polling-interval",
+    "last_updated": "Laatst bijgewerkt",
+    "friendly_name": "Sensornaam"
+  }
+}

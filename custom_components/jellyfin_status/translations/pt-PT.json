@@ -1,0 +1,53 @@
+{
+  "config": {
+    "error": {
+      "invalid_input": "Insere um endereço e chave API válidos.",
+      "invalid_api_key": "Falha na autenticação — verifica a tua chave API.",
+      "cannot_connect": "Não foi possível ligar ao servidor Jellyfin.",
+      "unknown": "Ocorreu um erro desconhecido. Verifica os registos.",
+      "duplicate_server_name": "Já existe um servidor com este nome. Escolhe um nome único."
+    },
+    "server_name": {
+      "name": "Nome do servidor",
+      "description": "Nome personalizado para este servidor Jellyfin"
+    },
+    "host": {
+      "name": "Host",
+      "description": "Endereço do teu servidor Jellyfin"
+    },
+    "port": {
+      "name": "Porta",
+      "description": "Número da porta onde o Jellyfin está a funcionar"
+    },
+    "api_key": {
+      "name": "Chave API",
+      "description": "A tua chave API Jellyfin para autenticação"
+    },
+    "scan_interval": {
+      "name": "Intervalo de verificação",
+      "description": "Intervalo de polling (em segundos)"
+    },
+    "use_https": {
+      "name": "Usar HTTPS",
+      "description": "Conexão segura através de HTTPS"
+    },
+    "ignore_ssl": {
+      "name": "Ignorar erros SSL",
+      "description": "Ignorar verificação do certificado SSL"
+    }
+  },
+  "sensor": {
+    "idle_message": "😴 Nada está a ser reproduzido neste momento",
+    "watching": "está a ver",
+    "listening_to": "está a ouvir",
+    "active_session_count": "Número de sessões ativas",
+    "audio_session_count": "Sessões com áudio",
+    "episode_session_count": "Sessões a ver episódios",
+    "movie_session_count": "Sessões a ver filmes",
+    "currently_playing": "O que os utilizadores estão a reproduzir",
+    "polling_enabled": "Polling ativado",
+    "polling_interval_seconds": "Intervalo de polling",
+    "last_updated": "Última atualização",
+    "friendly_name": "Nome do sensor"
+  }
+}

@@ -1,21 +1,53 @@
 {
-  "title": "Capteur de lecture Jellyfin",
-  "description": "Suivez les sessions de lecture des utilisateurs sur votre serveur Jellyfin.",
-  "config.step.user.title": "Connexion à Jellyfin",
-  "config.step.user.description": "Entrez les détails de connexion pour votre serveur Jellyfin.",
-  "config.error.cannot_connect": "Impossible de se connecter au serveur Jellyfin.",
-  "config.error.invalid_api_key": "La clé API est invalide.",
-  "config.error.unknown": "Erreur inattendue. Veuillez réessayer.",
-  "options.step.init.title": "Options du serveur Jellyfin",
-  "options.step.init.fields.server_name.name": "Nom d'affichage du serveur",
-  "options.step.init.fields.server_name.description": "Utilisé dans l'interface et les cartes du tableau de bord.",
-  "options.step.init.fields.scan_interval.name": "Intervalle d’analyse (secondes)",
-  "options.step.init.fields.use_https.name": "Utiliser HTTPS",
-  "options.step.init.fields.ignore_ssl.name": "Ignorer les erreurs SSL",
-  "options.step.init.fields.host.name": "Hôte du serveur",
-  "options.step.init.fields.port.name": "Port du serveur",
-  "options.step.init.fields.api_key.name": "Clé API Jellyfin",
-  "sensor.watching": "regarde",
-  "sensor.listening_to": "écoute",
-  "sensor.idle_message": "😴 Inactif — rien en cours de lecture"
+  "config": {
+    "error": {
+      "invalid_input": "Veuillez entrer un hôte et une clé API valides.",
+      "invalid_api_key": "Échec de l’authentification — vérifiez votre clé API.",
+      "cannot_connect": "Impossible de se connecter au serveur Jellyfin.",
+      "unknown": "Une erreur inconnue est survenue. Consultez vos journaux.",
+      "duplicate_server_name": "Un serveur avec ce nom existe déjà. Veuillez choisir un nom unique."
+    },
+    "server_name": {
+      "name": "Nom du serveur",
+      "description": "Nom personnalisé pour ce serveur Jellyfin"
+    },
+    "host": {
+      "name": "Hôte",
+      "description": "Adresse de votre serveur Jellyfin"
+    },
+    "port": {
+      "name": "Port",
+      "description": "Numéro de port utilisé par Jellyfin"
+    },
+    "api_key": {
+      "name": "Clé API",
+      "description": "Votre clé API Jellyfin pour l’authentification"
+    },
+    "scan_interval": {
+      "name": "Intervalle de scan",
+      "description": "Intervalle d’interrogation en secondes"
+    },
+    "use_https": {
+      "name": "Utiliser HTTPS",
+      "description": "Connexion sécurisée via HTTPS"
+    },
+    "ignore_ssl": {
+      "name": "Ignorer les erreurs SSL",
+      "description": "Ignorer la vérification du certificat SSL"
+    }
+  },
+  "sensor": {
+    "idle_message": "😴 Rien n’est en lecture actuellement",
+    "watching": "regarde",
+    "listening_to": "écoute",
+    "active_session_count": "Nombre de sessions actives",
+    "audio_session_count": "Sessions audio en cours",
+    "episode_session_count": "Sessions regardant des épisodes",
+    "movie_session_count": "Sessions regardant des films",
+    "currently_playing": "Ce que les utilisateurs regardent/écoutent",
+    "polling_enabled": "Interrogation activée",
+    "polling_interval_seconds": "Intervalle d’interrogation",
+    "last_updated": "Dernière mise à jour",
+    "friendly_name": "Nom du capteur"
+  }
 }

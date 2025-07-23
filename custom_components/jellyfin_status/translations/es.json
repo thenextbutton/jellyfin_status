@@ -1,53 +1,53 @@
 {
-  "title": "Sensor de reproducción de Jellyfin",
-  "description": "Supervisa las sesiones de reproducción de usuarios en tu servidor Jellyfin.",
   "config": {
-    "step": {
-      "user": {
-        "title": "Conectar a Jellyfin",
-        "description": "Introduce los datos de conexión para tu servidor Jellyfin."
-      }
-    },
     "error": {
+      "invalid_input": "Por favor, introduce un host y una clave API válidos.",
+      "invalid_api_key": "Autenticación fallida — verifica tu clave API.",
       "cannot_connect": "No se puede conectar al servidor Jellyfin.",
-      "invalid_api_key": "La clave API no es válida.",
-      "unknown": "Error inesperado. Intenta de nuevo."
+      "unknown": "Ocurrió un error desconocido. Por favor revisa tus registros.",
+      "duplicate_server_name": "Ya existe un servidor con ese nombre. Elige un nombre único."
+    },
+    "server_name": {
+      "name": "Nombre del servidor",
+      "description": "Nombre personalizado para este servidor Jellyfin"
+    },
+    "host": {
+      "name": "Host",
+      "description": "Dirección de tu servidor Jellyfin"
+    },
+    "port": {
+      "name": "Puerto",
+      "description": "Número de puerto en el que funciona Jellyfin"
+    },
+    "api_key": {
+      "name": "Clave API",
+      "description": "Tu clave API de Jellyfin para autenticación"
+    },
+    "scan_interval": {
+      "name": "Intervalo de sondeo",
+      "description": "Intervalo de sondeo en segundos"
+    },
+    "use_https": {
+      "name": "Usar HTTPS",
+      "description": "Conectar de forma segura usando HTTPS"
+    },
+    "ignore_ssl": {
+      "name": "Ignorar errores SSL",
+      "description": "Omitir la verificación de certificado SSL"
     }
   },
-  "options": {
-    "step": {
-      "init": {
-        "title": "Opciones del servidor Jellyfin",
-        "fields": {
-          "server_name": {
-            "name": "Nombre para mostrar del servidor",
-            "description": "Se usa en la interfaz y en las tarjetas del tablero."
-          },
-          "scan_interval": {
-            "name": "Intervalo de escaneo (segundos)"
-          },
-          "use_https": {
-            "name": "Usar HTTPS"
-          },
-          "ignore_ssl": {
-            "name": "Ignorar errores SSL"
-          },
-          "host": {
-            "name": "Host del servidor"
-          },
-          "port": {
-            "name": "Puerto del servidor"
-          },
-          "api_key": {
-            "name": "Clave API de Jellyfin"
-          }
-        }
-      }
-    },
-    "sensor": {
-      "watching": "está viendo",
-      "listening_to": "está escuchando",
-      "idle_message": "😴 Inactivo — no hay nada reproduciéndose"
-    }
+  "sensor": {
+    "idle_message": "😴 Nada se está reproduciendo actualmente",
+    "watching": "está viendo",
+    "listening_to": "está escuchando",
+    "active_session_count": "Número de sesiones activas",
+    "audio_session_count": "Sesiones reproduciendo audio",
+    "episode_session_count": "Sesiones viendo episodios",
+    "movie_session_count": "Sesiones viendo películas",
+    "currently_playing": "Qué están reproduciendo los usuarios",
+    "polling_enabled": "Sondeo habilitado",
+    "polling_interval_seconds": "Intervalo de sondeo",
+    "last_updated": "Última actualización",
+    "friendly_name": "Nombre del sensor"
   }
 }

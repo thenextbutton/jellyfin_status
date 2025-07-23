@@ -1,53 +1,53 @@
 {
-  "title": "Jellyfin再生センサー",
-  "description": "Jellyfinサーバー上のユーザー再生セッションを追跡します。",
   "config": {
-    "step": {
-      "user": {
-        "title": "Jellyfinに接続",
-        "description": "Jellyfinサーバーの接続情報を入力してください。"
-      }
-    },
     "error": {
-      "cannot_connect": "Jellyfinサーバーに接続できません。",
-      "invalid_api_key": "APIキーが無効です。",
-      "unknown": "予期しないエラーが発生しました。もう一度お試しください。"
+      "invalid_input": "有効なホストと API キーを入力してください。",
+      "invalid_api_key": "認証に失敗しました。API キーをご確認ください。",
+      "cannot_connect": "Jellyfin サーバーに接続できません。",
+      "unknown": "不明なエラーが発生しました。ログを確認してください。",
+      "duplicate_server_name": "この名前のサーバーは既に存在します。別の名前を指定してください。"
+    },
+    "server_name": {
+      "name": "サーバー名",
+      "description": "この Jellyfin サーバーのカスタム名"
+    },
+    "host": {
+      "name": "ホスト",
+      "description": "Jellyfin サーバーのアドレス"
+    },
+    "port": {
+      "name": "ポート",
+      "description": "Jellyfin が使用しているポート番号"
+    },
+    "api_key": {
+      "name": "API キー",
+      "description": "認証に使用する Jellyfin の API キー"
+    },
+    "scan_interval": {
+      "name": "スキャン間隔",
+      "description": "ポーリング間隔（秒単位）"
+    },
+    "use_https": {
+      "name": "HTTPS を使用する",
+      "description": "HTTPS による安全な接続を行う"
+    },
+    "ignore_ssl": {
+      "name": "SSL エラーを無視する",
+      "description": "SSL 証明書の検証をスキップする"
     }
   },
-  "options": {
-    "step": {
-      "init": {
-        "title": "Jellyfinサーバーのオプション",
-        "fields": {
-          "server_name": {
-            "name": "サーバー表示名",
-            "description": "UIやダッシュボードカードで使用されます。"
-          },
-          "scan_interval": {
-            "name": "スキャン間隔（秒）"
-          },
-          "use_https": {
-            "name": "HTTPSを使用"
-          },
-          "ignore_ssl": {
-            "name": "SSLエラーを無視"
-          },
-          "host": {
-            "name": "サーバーホスト"
-          },
-          "port": {
-            "name": "サーバーポート"
-          },
-          "api_key": {
-            "name": "Jellyfin APIキー"
-          }
-        }
-      }
-    },
-    "sensor": {
-      "watching": "視聴中",
-      "listening_to": "再生中",
-      "idle_message": "😴 アイドル状態 — 再生されているコンテンツはありません"
-    }
+  "sensor": {
+    "idle_message": "😴 現在再生中のメディアはありません",
+    "watching": "視聴中",
+    "listening_to": "再生中",
+    "active_session_count": "アクティブなセッション数",
+    "audio_session_count": "音声再生中のセッション",
+    "episode_session_count": "エピソード視聴中のセッション",
+    "movie_session_count": "映画視聴中のセッション",
+    "currently_playing": "ユーザーが現在再生している内容",
+    "polling_enabled": "ポーリングが有効",
+    "polling_interval_seconds": "ポーリング間隔（秒）",
+    "last_updated": "最終更新時刻",
+    "friendly_name": "センサー名"
   }
 }
