@@ -17,5 +17,46 @@
     "polling_interval_seconds": "Polling interval",
     "last_updated": "Last updated timestamp",
     "friendly_name": "Sensor name"
+  },
+  "title": "Jellyfin Playback Sensor",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Jellyfin",
+        "description": "Enter connection details for your Jellyfin server."
+      }
+    },
+    "error": {
+      "invalid_input": "Missing or invalid input.",
+      "invalid_api_key": "Authentication failed — check your API key.",
+      "cannot_connect": "Unable to connect to Jellyfin server.",
+      "unknown": "Unexpected error occurred.",
+      "duplicate_server_name": "Duplicate server name"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Jellyfin Server Options",
+        "data": {
+          "server_name": "Server display name",
+          "scan_interval": "Scan interval (seconds)",
+          "use_https": "Use HTTPS",
+          "ignore_ssl": "Ignore SSL errors",
+          "host": "Server host",
+          "port": "Server port",
+          "api_key": "API key"
+        },
+        "description": {
+          "server_name": "Used in UI and dashboard cards.",
+          "scan_interval": "Polling interval in seconds",
+          "use_https": "Connect securely using HTTPS",
+          "ignore_ssl": "Skip SSL certificate verification",
+          "host": "Address of your Jellyfin server",
+          "port": "Port number Jellyfin is running on",
+          "api_key": "Your Jellyfin API key for authentication"
+        }
+      }
+    }
   }
 }
