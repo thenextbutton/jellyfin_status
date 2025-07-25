@@ -84,8 +84,7 @@ class JellyfinStatusCard extends LitElement {
         return html`
             <ha-card>
                 <div class="card-header">
-                    <!-- Logo source now points to the same directory as the card file -->
-                    <img src="Jellyfin_-_banner-dark.svg" class="logo" alt="Jellyfin Logo">
+                    <img src="Jellyfin_-_banner-dark.webp" class="logo" alt="Jellyfin Logo">
                 </div>
                 <div class="card-content">
                     <div class="section-title">${this._localize('title', 'List of Media Playing')}</div>
