@@ -10,23 +10,23 @@
         "title": "Connect to Jellyfin",
         "description": "Enter connection details for your Jellyfin server."
       }
+    }
+  },
+  "error": {
+    "invalid_input": {
+      "description": "Missing or invalid input."
     },
-    "error": {
-      "invalid_input": {
-        "description": "Missing or invalid input."
-      },
-      "invalid_api_key": {
-        "description": "Authentication failed — check your API key."
-      },
-      "cannot_connect": {
-        "description": "Unable to connect to Jellyfin server."
-      },
-      "unknown": {
-        "description": "Unexpected error occurred."
-      },
-      "duplicate_server_name": {
-        "description": "Duplicate server name"
-      }
+    "invalid_api_key": {
+      "description": "Authentication failed — check your API key."
+    },
+    "cannot_connect": {
+      "description": "Unable to connect to Jellyfin server."
+    },
+    "unknown": {
+      "description": "Unexpected error occurred."
+    },
+    "duplicate_server_name": {
+      "description": "Duplicate server name"
     }
   },
   "options": {
@@ -126,6 +126,47 @@
     "friendly_name": {
       "name": "Sensor name",
       "description": "Sensor’s display name"
+    }
+  },
+  "global_sensor": {
+    "name": "Jellyfin Overall Status",
+    "state": {
+      "no_servers_configured": {
+        "name": "No Servers Configured",
+        "description": "No Jellyfin servers have been configured in the integration."
+      },
+      "all_ok": {
+        "name": "All OK",
+        "description": "All configured Jellyfin servers are available."
+      },
+      "issues_detected": {
+        "name": "Issues Detected",
+        "description": "Some Jellyfin servers are unavailable or reporting issues."
+      },
+      "all_unavailable": {
+        "name": "All Unavailable",
+        "description": "All configured Jellyfin servers are unavailable."
+      }
+    },
+    "attributes": {
+      "total_servers": {
+        "name": "Total Servers",
+        "description": "Total number of Jellyfin servers configured."
+      },
+      "servers_with_issues": {
+        "name": "Servers with Issues",
+        "description": "Number of Jellyfin servers currently unavailable or reporting issues."
+      },
+      "available_servers": {
+        "name": "Available Servers",
+        "description": "Number of Jellyfin servers currently available."
+      }
+    }
+  },
+  "card": {
+    "title": "List of Media Playing",
+    "error": {
+      "no_servers_found": "No Jellyfin server entities found or configured for monitoring."
     }
   }
 }
