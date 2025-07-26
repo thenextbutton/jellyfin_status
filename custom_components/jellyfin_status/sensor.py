@@ -23,7 +23,7 @@ from .const import DOMAIN
 _LOGGER = logging.getLogger(__name__)
 SCAN_INTERVAL = timedelta(seconds=30)
 
-# 🔍 Translation loader
+# Translation loader
 async def async_list_translation_files():
     path = os.path.join(os.path.dirname(__file__), "translations")
     try:
@@ -32,7 +32,7 @@ async def async_list_translation_files():
         _LOGGER.warning("Translation file listing failed: %s", e)
         return []
 
-# 🔧 Registry-based Jellyfin sensor discovery
+# Registry-based Jellyfin sensor discovery
 async def get_jellyfin_sensor_entity_ids(hass: HomeAssistant) -> list[str]:
     registry = async_get_registry(hass)
     jellyfin_entities = []
@@ -48,12 +48,12 @@ async def get_jellyfin_sensor_entity_ids(hass: HomeAssistant) -> list[str]:
 
     return jellyfin_entities
 
-# 🛠️ Entry setup
+# Entry setup
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback):
     coordinator = hass.data[DOMAIN][entry.entry_id]
     async_add_entities([JellyfinSensor(coordinator, entry, async_add_entities)])
 
-# 🎯 Per-server Jellyfin status
+# Per-server Jellyfin status
 class JellyfinSensor(CoordinatorEntity, SensorEntity):
     def __init__(self, coordinator, entry: ConfigEntry, async_add_entities: AddEntitiesCallback):
         super().__init__(coordinator)
@@ -159,7 +159,7 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
 
         return attrs
 
-# 🌐 Global Jellyfin diagnostics
+# Global Jellyfin diagnostics
 class JellyfinGlobalSensor(SensorEntity):
     def __init__(self, hass: HomeAssistant, sensor_type: str):
         self._hass = hass
@@ -172,7 +172,7 @@ class JellyfinGlobalSensor(SensorEntity):
         self._attr_extra_state_attributes = {}
         self._attr_entity_category = EntityCategory.DIAGNOSTIC
 
-        self._debounce_handle = None  # 🧠 Debounce gate
+        self._debounce_handle = None  # Debounce gate
 
     async def async_added_to_hass(self):
         async def delayed_refresh(_):

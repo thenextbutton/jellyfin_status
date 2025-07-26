@@ -35,5 +35,19 @@
       "name": "Ignore SSL Errors",
       "description": "Skip SSL certificate verification"
     }
+  },
+  "field": {
+    "use_https": {
+      "name": "Use HTTPS",
+      "description": "Enable secure connection to Jellyfin server"
+    },
+    "ignore_ssl": {
+      "name": "Ignore SSL Errors",
+      "description": "Skip certificate validation for HTTPS connections"
+    },
+    "debug_payloads": {
+      "name": "Verbose Payload Logging",
+      "description": "Log full Jellyfin API responses for diagnostics"
+    }
   }
 }

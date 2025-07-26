@@ -52,7 +52,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     hass.services.async_register(DOMAIN, "refresh", handle_refresh)
 
-    # ✅ Listen for entity registry updates
+    # Listen for entity registry updates
     def handle_registry_event(event):
         _LOGGER.debug("🔄 Entity registry updated, refreshing Jellyfin sensors...")
         hass.loop.call_soon_threadsafe(
@@ -62,14 +62,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     unsub_registry = hass.bus.async_listen(EVENT_ENTITY_REGISTRY_UPDATED, handle_registry_event)
     coordinator._unsub_registry = unsub_registry  # Optional: store in coordinator for cleanup
 
-    # ✅ Forward setup to sensor platform
+    # Forward setup to sensor platform
     await hass.config_entries.async_forward_entry_setups(entry, ["sensor"])
     return True
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     coordinator = hass.data[DOMAIN].pop(entry.entry_id)
 
-    # ✅ Unsubscribe from registry events
+    # Unsubscribe from registry events
     if hasattr(coordinator, "_unsub_registry") and coordinator._unsub_registry:
         coordinator._unsub_registry()
         coordinator._unsub_registry = None
