@@ -15,7 +15,7 @@ class JellyfinCoordinator(DataUpdateCoordinator):
         self.use_https = use_https
         self.ignore_ssl = ignore_ssl
         self.last_updated = None
-        self.debug_payloads = entry.options.get("debug_payloads", False)
+        self.debug_payloads = entry.options.get("debug_payloads", False) if entry else False
 
         connector = aiohttp.TCPConnector(verify_ssl=not ignore_ssl)
         self.session = aiohttp.ClientSession(connector=connector)

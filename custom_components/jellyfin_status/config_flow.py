@@ -42,6 +42,7 @@ class JellyfinConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     else:
                         temp_coordinator = JellyfinCoordinator(
                             hass=self.hass,
+                            entry=None,
                             api_key=default_api_key,
                             address=f"{default_host}:{default_port}",
                             update_interval=None,
