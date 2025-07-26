@@ -1,6 +1,17 @@
 {
   "state": {},
-  "entity": {},
+  "entity": {
+    "sensor": {
+      "total_servers_sensor_name": {
+        "name": "Jellyfin Servidores Totais",
+        "description": "Número total de servidores Jellyfin configurados"
+      },
+      "error_servers_sensor_name": {
+        "name": "Jellyfin Servidores com Erro",
+        "description": "Número de servidores Jellyfin com erros de conexão ou atualização"
+      }
+    }
+  },
   "sensor": {
     "idle_message": "😴 Nada está a ser reproduzido neste momento",
     "watching": "está a ver",

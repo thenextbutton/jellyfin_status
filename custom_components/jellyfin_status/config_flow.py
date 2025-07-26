@@ -4,8 +4,8 @@ import voluptuous as vol
 import logging
 
 from .const import DOMAIN
-from .options_flow import OptionsFlowHandler
 from .coordinator import JellyfinCoordinator
+from .options_flow import JellyfinOptionsFlowHandler
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -85,7 +85,8 @@ class JellyfinConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     @staticmethod
     def async_get_options_flow(config_entry):
-        return OptionsFlowHandler(config_entry)
+        return JellyfinOptionsFlowHandler(config_entry)
+
 
 class InvalidInputError(HomeAssistantError):
     """Raised when required fields are missing or malformed."""

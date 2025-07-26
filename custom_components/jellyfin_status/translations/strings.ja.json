@@ -1,6 +1,17 @@
 {
   "state": {},
-  "entity": {},
+  "entity": {
+    "sensor": {
+      "total_servers_sensor_name": {
+        "name": "Jellyfinサーバー合計",
+        "description": "設定されているJellyfinサーバーの合計数"
+      },
+      "error_servers_sensor_name": {
+        "name": "Jellyfinエラーサーバー",
+        "description": "接続または更新エラーがあるJellyfinサーバーの数"
+      }
+    }
+  },
   "sensor": {
     "idle_message": "😴 現在再生中のメディアはありません",
     "watching": "視聴中",

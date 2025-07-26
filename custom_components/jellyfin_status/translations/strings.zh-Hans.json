@@ -1,6 +1,17 @@
 {
   "state": {},
-  "entity": {},
+  "entity": {
+    "sensor": {
+      "total_servers_sensor_name": {
+        "name": "Jellyfin 服务器总数",
+        "description": "已配置的 Jellyfin 服务器总数"
+      },
+      "error_servers_sensor_name": {
+        "name": "Jellyfin 错误服务器",
+        "description": "存在连接或更新错误的 Jellyfin 服务器数量"
+      }
+    }
+  },
   "sensor": {
     "idle_message": "😴 当前没有播放内容",
     "watching": "正在观看",

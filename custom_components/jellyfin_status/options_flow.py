@@ -2,23 +2,23 @@ from homeassistant import config_entries
 import voluptuous as vol
 from .const import DOMAIN
 
-class OptionsFlowHandler(config_entries.OptionsFlow):
+class JellyfinOptionsFlowHandler(config_entries.OptionsFlow):
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
         """Initialize Jellyfin options flow."""
-        self.config_entry = config_entry
+        self._config_entry = config_entry
 
     async def async_step_init(self, user_input=None):
         # Helper to prefer updated options over original config, safely preserving 0/False
         def get_opt(key, default=None):
-            if key in self.config_entry.options:
-                return self.config_entry.options[key]
-            return self.config_entry.data.get(key, default)
+            if key in self._config_entry.options:
+                return self._config_entry.options[key]
+            return self._config_entry.data.get(key, default)
 
         if user_input is not None:
             # 🚫 Ensure server_name is retained unmodified
             user_input["server_name"] = get_opt("server_name")
             return self.async_create_entry(title="", data=user_input)
-
+        
         # 📝 Option form schema (server_name omitted to hide from UI)
         return self.async_show_form(
             step_id="init",
@@ -69,6 +69,14 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                     description={
                         "suggested_value": get_opt("ignore_ssl"),
                         "translation_key": "ignore_ssl"
+                    }
+                ): bool,
+                vol.Optional(
+                    "debug_payloads",
+                    default=get_opt("debug_payloads", False),
+                    description={
+                        "suggested_value": get_opt("debug_payloads", False),
+                        "translation_key": "debug_payloads"
                     }
                 ): bool
             }),
