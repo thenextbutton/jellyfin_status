@@ -17,8 +17,8 @@ class JellyfinConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
 
         # Use prior input values to repopulate the form on error
-        default_name = user_input.get("server_name") if user_input else "Jellyfin"
-        default_host = user_input.get("host") if user_input else "localhost"
+        default_name = user_input.get("server_name") if user_input else ""
+        default_host = user_input.get("host") if user_input else ""
         default_port = user_input.get("port") if user_input else 8096
         default_api_key = user_input.get("api_key") if user_input else ""
         default_scan = user_input.get("scan_interval") if user_input else 30
