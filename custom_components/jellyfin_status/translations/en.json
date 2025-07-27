@@ -13,15 +13,6 @@
           "scan_interval": "Scan interval",
           "use_https": "Use HTTPS",
           "ignore_ssl": "Ignore SSL errors"
-        },
-        "description": {
-          "server_name": "Used in UI and dashboard cards.",
-          "host": "Address of your Jellyfin server",
-          "port": "Port Jellyfin is running on",
-          "api_key": "Your Jellyfin API key for authentication",
-          "scan_interval": "Polling interval in seconds",
-          "use_https": "Connect securely using HTTPS",
-          "ignore_ssl": "Skip SSL certificate verification"
         }
       }
     },
@@ -47,16 +38,6 @@
           "port": "Server port",
           "api_key": "Jellyfin API key",
           "debug_payloads": "Verbose Payload Logging"
-        },
-        "description": {
-          "server_name": "Used in UI and dashboard cards.",
-          "scan_interval": "Polling interval in seconds",
-          "use_https": "Connect securely using HTTPS",
-          "ignore_ssl": "Skip SSL certificate verification",
-          "host": "Address of your Jellyfin server",
-          "port": "Port Jellyfin is running on",
-          "api_key": "Your Jellyfin API key for authentication",
-          "debug_payloads": "Log full Jellyfin API responses for diagnostics"
         }
       }
     }
