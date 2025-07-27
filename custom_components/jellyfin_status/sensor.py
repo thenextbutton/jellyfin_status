@@ -402,8 +402,8 @@ class JellyfinGlobalSensor(SensorEntity):
             self._attr_native_value = len(unavailable)
 
         attributes = {
-            self._t("entities", "entities"): entity_ids,
-            self._t("attached_entity", "attached_entity"): self._attached_entity_id or "None",
+            "entities": entity_ids,  # Use "entities" as the key
+            "attached_entity": self._attached_entity_id or "None", # Use "attached_entity" as the key
         }
 
         _LOGGER.debug("📘 Final attribute keys: %s", list(attributes.keys()))
