@@ -1,11 +1,62 @@
 {
+  "title": {
+    "config": {
+      "name": "Jellyfin Playback Sensor"
+    }
+  },
   "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Jellyfin",
+        "description": "Enter connection details for your Jellyfin server.",
+        "fields": {
+          "server_name": {
+            "name": "Server display name",
+            "description": "Used in UI and dashboard cards."
+          },
+          "host": {
+            "name": "Server host",
+            "description": "Address of your Jellyfin server"
+          },
+          "port": {
+            "name": "Server port",
+            "description": "Port Jellyfin is running on"
+          },
+          "api_key": {
+            "name": "Jellyfin API key",
+            "description": "Your Jellyfin API key for authentication"
+          },
+          "scan_interval": {
+            "name": "Scan interval",
+            "description": "Polling interval in seconds"
+          },
+          "use_https": {
+            "name": "Use HTTPS",
+            "description": "Connect securely using HTTPS"
+          },
+          "ignore_ssl": {
+            "name": "Ignore SSL errors",
+            "description": "Skip SSL certificate verification"
+          }
+        }
+      }
+    },
     "error": {
-      "invalid_input": "Please enter a valid host and API key.",
-      "invalid_api_key": "Authentication failed — check your API key.",
-      "cannot_connect": "Unable to connect to the Jellyfin server.",
-      "unknown": "An unknown error occurred. Please check your logs.",
-      "duplicate_server_name": "A server with this name already exists. Please choose a unique name."
+      "invalid_input": {
+        "description": "Missing or invalid input."
+      },
+      "invalid_api_key": {
+        "description": "Authentication failed — check your API key."
+      },
+      "cannot_connect": {
+        "description": "Unable to connect to Jellyfin server."
+      },
+      "unknown": {
+        "description": "Unexpected error occurred."
+      },
+      "duplicate_server_name": {
+        "description": "A server with this name already exists."
+      }
     },
     "server_name": {
       "name": "Server Name",
@@ -36,6 +87,128 @@
       "description": "Skip SSL certificate verification"
     }
   },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Jellyfin Server Options",
+        "fields": {
+          "server_name": {
+            "name": "Server display name",
+            "description": "Used in UI and dashboard cards."
+          },
+          "scan_interval": {
+            "name": "Scan interval",
+            "description": "Polling interval in seconds"
+          },
+          "use_https": {
+            "name": "Use HTTPS",
+            "description": "Connect securely using HTTPS"
+          },
+          "ignore_ssl": {
+            "name": "Ignore SSL errors",
+            "description": "Skip SSL certificate verification"
+          },
+          "host": {
+            "name": "Server host",
+            "description": "Address of your Jellyfin server"
+          },
+          "port": {
+            "name": "Server port",
+            "description": "Port Jellyfin is running on"
+          },
+          "api_key": {
+            "name": "Jellyfin API key",
+            "description": "Your Jellyfin API key for authentication"
+          },
+          "debug_payloads": {
+            "name": "Verbose Payload Logging",
+            "description": "Log full Jellyfin API responses for diagnostics"
+          }
+        }
+      }
+    }
+  },
+  "sensor": {
+    "idle_message": {
+      "name": "Idle message",
+      "description": "Message shown when no media is playing"
+    },
+    "watching": {
+      "name": "Watching",
+      "description": "Text for users currently watching media"
+    },
+    "listening_to": {
+      "name": "Listening to",
+      "description": "Text for users currently listening to audio"
+    },
+    "debug_marker": {
+      "name": "Debug marker",
+      "description": "Developer-only string for translation loading test"
+    },
+    "active_session_count": {
+      "name": "Active sessions",
+      "description": "Number of active playback sessions"
+    },
+    "audio_session_count": {
+      "name": "Audio sessions",
+      "description": "Sessions playing audio"
+    },
+    "episode_session_count": {
+      "name": "Episode sessions",
+      "description": "Sessions watching episodes"
+    },
+    "movie_session_count": {
+      "name": "Movie sessions",
+      "description": "Sessions watching movies"
+    },
+    "currently_playing": {
+      "name": "Currently playing",
+      "description": "What users are currently watching or listening to"
+    },
+    "language": {
+      "name": "Language code",
+      "description": "Current Home Assistant language code"
+    },
+    "loaded_translation": {
+      "name": "Loaded translation",
+      "description": "Translation string loaded for idle state"
+    },
+    "polling_enabled": {
+      "name": "Polling enabled",
+      "description": "Whether polling is active"
+    },
+    "polling_interval_seconds": {
+      "name": "Polling interval",
+      "description": "Polling interval in seconds"
+    },
+    "last_updated": {
+      "name": "Last updated",
+      "description": "Timestamp of last update"
+    },
+    "friendly_name": {
+      "name": "Sensor name",
+      "description": "Sensor’s display name"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "total_servers_sensor_name": {
+        "name": "Jellyfin Servers Total",
+        "description": "Total number of configured Jellyfin servers"
+      },
+      "error_servers_sensor_name": {
+        "name": "Jellyfin Servers Error",
+        "description": "Number of Jellyfin servers with connection or update errors"
+      }
+    }
+  },
+  "title_placeholders": {
+    "server_name": {
+      "name": "Server Name",
+      "description": "Display name for the server"
+    }
+  },
+  "state": {},
   "field": {
     "use_https": {
       "name": "Use HTTPS",
