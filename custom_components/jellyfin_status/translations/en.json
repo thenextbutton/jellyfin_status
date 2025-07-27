@@ -51,10 +51,10 @@
             "name": "😴 Idle — nothing to see here"
           },
           "watching": {
-            "name": "glued to"
+            "name": "is watching"
           },
           "listening_to": {
-            "name": "wrapping their ears around"
+            "name": "is listening to"
           },
           "debug_marker": {
             "name": "Debug marker"
