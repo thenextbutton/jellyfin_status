@@ -96,6 +96,8 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
         self.async_write_ha_state()
 
     def _t(self, key: str, fallback: str = None) -> str:
+        # This method is primarily for general sensor translations if they exist.
+        # For state attributes, we will use direct access as seen below.
         return self._translations.get(f"sensor.{key}", fallback or key)
 
     @property
@@ -110,12 +112,13 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
 
     @property
     def extra_state_attributes(self):
-        attrs = {
-            "friendly_name": self._friendly_name,
-            "polling_enabled": self.coordinator.update_interval is not None,
-            "polling_interval_seconds": int(self.coordinator.update_interval.total_seconds()) if self.coordinator.update_interval else 0,
-            "last_updated": self.coordinator.last_updated
-        }
+        attrs = {}
+
+        # Accessing translations for attribute names directly from en.json structure
+        attrs["friendly_name"] = self._translations.get("entity", {}).get("sensor", {}).get("jellyfin_playback_sensor", {}).get("state_attributes", {}).get("friendly_name", {}).get("name", self._friendly_name)
+        attrs["polling_enabled"] = self.coordinator.update_interval is not None
+        attrs["polling_interval_seconds"] = int(self.coordinator.update_interval.total_seconds()) if self.coordinator.update_interval else 0
+        attrs["last_updated"] = self.coordinator.last_updated
 
         sessions = self.coordinator.data or []
         active = []
@@ -132,6 +135,10 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
         sorted_sessions = sorted(active, key=lambda x: (x[0].lower(), x[1].get("Name", "").lower()))
         phrases = []
 
+        # Retrieving localized strings for "watching" and "listening to"
+        listening_to_phrase = self._translations.get("entity", {}).get("sensor", {}).get("jellyfin_playback_sensor", {}).get("state_attributes", {}).get("listening_to", {}).get("name", "is listening to")
+        watching_phrase = self._translations.get("entity", {}).get("sensor", {}).get("jellyfin_playback_sensor", {}).get("state_attributes", {}).get("watching", {}).get("name", "is watching")
+
         for user, item, session in sorted_sessions:
             media_type = item.get("Type", "Unknown")
             title = item.get("Name", "Unknown")
@@ -139,23 +146,38 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
             emoji = {"Audio": "🎵", "Movie": "🎬", "Episode": "📺"}.get(media_type, "📺")
 
             if media_type == "Audio":
-                phrases.append(f"{emoji} {user} {self._t('listening_to', 'is listening to')} {artist} – {title}")
+                phrases.append(f"{emoji} {user} {listening_to_phrase} {artist} – {title}")
             elif media_type == "Episode":
                 series = item.get("SeriesName", "Unknown Series")
                 season = item.get("ParentIndexNumber")
                 episode = item.get("IndexNumber")
                 suffix = f" (S{season:02} E{episode:02})" if season and episode else ""
-                phrases.append(f"{emoji} {user} {self._t('watching', 'is watching')} {series} – {title}{suffix}")
+                phrases.append(f"{emoji} {user} {watching_phrase} {series} – {title}{suffix}")
             elif media_type == "Movie":
-                phrases.append(f"{emoji} {user} {self._t('watching', 'is watching')} {title}")
+                phrases.append(f"{emoji} {user} {watching_phrase} {title}")
             else:
-                phrases.append(f"📺 {user} {self._t('watching', 'is watching')} {title}")
+                phrases.append(f"📺 {user} {watching_phrase} {title}")
 
-        attrs["currently_playing"] = "\n".join(phrases) if phrases else self._t("idle_message", "😴 Idle — nothing to see here")
+        # Retrieving localized string for "idle_message"
+        idle_message_text = self._translations.get("entity", {}).get("sensor", {}).get("jellyfin_playback_sensor", {}).get("state_attributes", {}).get("idle_message", {}).get("name", "😴 Idle — nothing to see here")
+        attrs["currently_playing"] = "\n".join(phrases) if phrases else idle_message_text
+
+        # The following attribute names are not values to be translated, but keys for counts.
+        # However, if you wanted their 'name' (e.g., "Active sessions") to be translated
+        # and displayed as part of the attributes, you would need to fetch them similarly.
+        # For this scenario, they are counts, so direct translation of the attribute value is not applicable.
         attrs["active_session_count"] = len(active)
         attrs["audio_session_count"] = sum(1 for _, item, _ in active if item.get("Type") == "Audio")
         attrs["episode_session_count"] = sum(1 for _, item, _ in active if item.get("Type") == "Episode")
         attrs["movie_session_count"] = sum(1 for _, item, _ in active if item.get("Type") == "Movie")
+
+        # Adding other state attribute names explicitly from en.json structure if they were to be displayed directly
+        # Currently, these are just keys for numeric values, not displayable strings in themselves.
+        # If you wanted to *show* "Active sessions" as a string in the attributes dictionary,
+        # you would fetch its name.
+        attrs["language"] = self._translations.get("entity", {}).get("sensor", {}).get("jellyfin_playback_sensor", {}).get("state_attributes", {}).get("language", {}).get("name", "Language code")
+        attrs["loaded_translation"] = self._translations.get("entity", {}).get("sensor", {}).get("jellyfin_playback_sensor", {}).get("state_attributes", {}).get("loaded_translation", {}).get("name", "Loaded translation")
+
 
         return attrs
 
@@ -164,8 +186,8 @@ class JellyfinGlobalSensor(SensorEntity):
     def __init__(self, hass: HomeAssistant, sensor_type: str):
         self._hass = hass
         self._type = sensor_type
+        # These are handled by translation_key directly, which should map to total_servers_sensor_name/error_servers_sensor_name in en.json
         self._attr_translation_key = f"{sensor_type}_servers_sensor_name"
-        #self._attr_name = f"Jellyfin Servers {sensor_type.title()}"
         self._attr_unique_id = f"jellyfin_servers_{sensor_type}"
         self._attr_icon = "mdi:server"
         self._attr_native_value = 0
