@@ -62,21 +62,23 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
         server_name = entry.options.get("server_name") or entry.title or "Jellyfin"
         slug = server_name.lower().replace(" ", "_").replace("-", "_")
 
-        self._attr_name = f"{server_name} Status"
+        # Use translation_key for the base sensor name, Home Assistant will handle its translation
+        self._attr_translation_key = "jellyfin_playback_sensor"
         self._attr_unique_id = f"{DOMAIN}_{slug}"
-        self._friendly_name = self._attr_name
+        self._friendly_name = f"{server_name} Status" # Use for the attribute, not the primary name
         self._translations = {}
         self._language = None
         self._attr_should_poll = False
 
     async def async_added_to_hass(self):
         self._language = self.hass.config.language
+        # Load translations for the entire component
         self._translations = await async_get_translations(
             self.hass, self._language, f"custom_components.{DOMAIN}"
         )
         _LOGGER.debug("📁 Available translation files: %s", await async_list_translation_files())
         _LOGGER.debug("Loaded translations for: %s", self._language)
-        _LOGGER.debug("Translation keys: %s", list(self._translations))
+        _LOGGER.debug("Translation keys: %s", list(self._translations.keys())) # Log actual keys to verify
         self.coordinator.async_add_listener(self._handle_coordinator_update)
         await self.coordinator.async_request_refresh()
 
@@ -95,11 +97,6 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
     def _handle_coordinator_update(self) -> None:
         self.async_write_ha_state()
 
-    def _t(self, key: str, fallback: str = None) -> str:
-        # This method is primarily for general sensor translations if they exist.
-        # For state attributes, we will use direct access as seen below.
-        return self._translations.get(f"sensor.{key}", fallback or key)
-
     @property
     def state(self):
         sessions = self.coordinator.data or []
@@ -112,13 +109,16 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
 
     @property
     def extra_state_attributes(self):
-        attrs = {}
+        # Base key for state attribute translations for this sensor
+        base_attr_key = f"component.{DOMAIN}.entity.sensor.jellyfin_playback_sensor.state_attributes."
 
-        # Accessing translations for attribute names directly from en.json structure
-        attrs["friendly_name"] = self._translations.get("entity", {}).get("sensor", {}).get("jellyfin_playback_sensor", {}).get("state_attributes", {}).get("friendly_name", {}).get("name", self._friendly_name)
-        attrs["polling_enabled"] = self.coordinator.update_interval is not None
-        attrs["polling_interval_seconds"] = int(self.coordinator.update_interval.total_seconds()) if self.coordinator.update_interval else 0
-        attrs["last_updated"] = self.coordinator.last_updated
+        attrs = {
+            # Use the friendly_name attribute to show the server-specific name
+            "friendly_name": self._friendly_name,
+            "polling_enabled": self.coordinator.update_interval is not None,
+            "polling_interval_seconds": int(self.coordinator.update_interval.total_seconds()) if self.coordinator.update_interval else 0,
+            "last_updated": self.coordinator.last_updated
+        }
 
         sessions = self.coordinator.data or []
         active = []
@@ -135,9 +135,11 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
         sorted_sessions = sorted(active, key=lambda x: (x[0].lower(), x[1].get("Name", "").lower()))
         phrases = []
 
-        # Retrieving localized strings for "watching" and "listening to"
-        listening_to_phrase = self._translations.get("entity", {}).get("sensor", {}).get("jellyfin_playback_sensor", {}).get("state_attributes", {}).get("listening_to", {}).get("name", "is listening to")
-        watching_phrase = self._translations.get("entity", {}).get("sensor", {}).get("jellyfin_playback_sensor", {}).get("state_attributes", {}).get("watching", {}).get("name", "is watching")
+        # Retrieve common translation phrases once
+        listening_to_phrase = self._translations.get(f"{base_attr_key}listening_to.name", "is listening to")
+        watching_phrase = self._translations.get(f"{base_attr_key}watching.name", "is watching")
+        idle_message_phrase = self._translations.get(f"{base_attr_key}idle_message.name", "😴 Idle — nothing to see here")
+
 
         for user, item, session in sorted_sessions:
             media_type = item.get("Type", "Unknown")
@@ -158,26 +160,11 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
             else:
                 phrases.append(f"📺 {user} {watching_phrase} {title}")
 
-        # Retrieving localized string for "idle_message"
-        idle_message_text = self._translations.get("entity", {}).get("sensor", {}).get("jellyfin_playback_sensor", {}).get("state_attributes", {}).get("idle_message", {}).get("name", "😴 Idle — nothing to see here")
-        attrs["currently_playing"] = "\n".join(phrases) if phrases else idle_message_text
-
-        # The following attribute names are not values to be translated, but keys for counts.
-        # However, if you wanted their 'name' (e.g., "Active sessions") to be translated
-        # and displayed as part of the attributes, you would need to fetch them similarly.
-        # For this scenario, they are counts, so direct translation of the attribute value is not applicable.
+        attrs["currently_playing"] = "\n".join(phrases) if phrases else idle_message_phrase
         attrs["active_session_count"] = len(active)
         attrs["audio_session_count"] = sum(1 for _, item, _ in active if item.get("Type") == "Audio")
         attrs["episode_session_count"] = sum(1 for _, item, _ in active if item.get("Type") == "Episode")
         attrs["movie_session_count"] = sum(1 for _, item, _ in active if item.get("Type") == "Movie")
-
-        # Adding other state attribute names explicitly from en.json structure if they were to be displayed directly
-        # Currently, these are just keys for numeric values, not displayable strings in themselves.
-        # If you wanted to *show* "Active sessions" as a string in the attributes dictionary,
-        # you would fetch its name.
-        attrs["language"] = self._translations.get("entity", {}).get("sensor", {}).get("jellyfin_playback_sensor", {}).get("state_attributes", {}).get("language", {}).get("name", "Language code")
-        attrs["loaded_translation"] = self._translations.get("entity", {}).get("sensor", {}).get("jellyfin_playback_sensor", {}).get("state_attributes", {}).get("loaded_translation", {}).get("name", "Loaded translation")
-
 
         return attrs
 
@@ -186,7 +173,8 @@ class JellyfinGlobalSensor(SensorEntity):
     def __init__(self, hass: HomeAssistant, sensor_type: str):
         self._hass = hass
         self._type = sensor_type
-        # These are handled by translation_key directly, which should map to total_servers_sensor_name/error_servers_sensor_name in en.json
+        # _attr_translation_key correctly maps to total_servers_sensor_name/error_servers_sensor_name in en.json
+        # Home Assistant handles the translation of the entity's name based on this.
         self._attr_translation_key = f"{sensor_type}_servers_sensor_name"
         self._attr_unique_id = f"jellyfin_servers_{sensor_type}"
         self._attr_icon = "mdi:server"
