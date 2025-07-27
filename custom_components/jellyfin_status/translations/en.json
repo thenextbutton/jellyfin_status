@@ -70,65 +70,71 @@
         "name": "Jellyfin Servers Error",
         "description": "Number of Jellyfin servers with connection or update errors"
       },
-      "idle_message": {
-        "name": "Idle message",
-        "description": "Message shown when no media is playing"
-      },
-      "watching": {
-        "name": "Watching",
-        "description": "Text for users currently watching media"
-      },
-      "listening_to": {
-        "name": "Listening to",
-        "description": "Text for users currently listening to audio"
-      },
-      "debug_marker": {
-        "name": "Debug marker",
-        "description": "Developer-only string for translation loading test"
-      },
-      "active_session_count": {
-        "name": "Active sessions",
-        "description": "Number of active playback sessions"
-      },
-      "audio_session_count": {
-        "name": "Audio sessions",
-        "description": "Sessions playing audio"
-      },
-      "episode_session_count": {
-        "name": "Episode sessions",
-        "description": "Sessions watching episodes"
-      },
-      "movie_session_count": {
-        "name": "Movie sessions",
-        "description": "Sessions watching movies"
-      },
-      "currently_playing": {
-        "name": "Currently playing",
-        "description": "What users are currently watching or listening to"
-      },
-      "language": {
-        "name": "Language code",
-        "description": "Current Home Assistant language code"
-      },
-      "loaded_translation": {
-        "name": "Loaded translation",
-        "description": "Translation string loaded for idle state"
-      },
-      "polling_enabled": {
-        "name": "Polling enabled",
-        "description": "Whether polling is active"
-      },
-      "polling_interval_seconds": {
-        "name": "Polling interval",
-        "description": "Polling interval in seconds"
-      },
-      "last_updated": {
-        "name": "Last updated",
-        "description": "Timestamp of last update"
-      },
-      "friendly_name": {
-        "name": "Sensor name",
-        "description": "Sensor’s display name"
+      "jellyfin_playback_sensor": {  
+        "name": "Jellyfin Playback Status",
+        "description": "Status of currently playing media on Jellyfin",
+        "state_attributes": {
+          "idle_message": {
+            "name": "Idle message",
+            "description": "Message shown when no media is playing"
+          },
+          "watching": {
+            "name": "Watching",
+            "description": "Text for users currently watching media"
+          },
+          "listening_to": {
+            "name": "Listening to",
+            "description": "Text for users currently listening to audio"
+          },
+          "debug_marker": {
+            "name": "Debug marker",
+            "description": "Developer-only string for translation loading test"
+          },
+          "active_session_count": {
+            "name": "Active sessions",
+            "description": "Number of active playback sessions"
+          },
+          "audio_session_count": {
+            "name": "Audio sessions",
+            "description": "Sessions playing audio"
+          },
+          "episode_session_count": {
+            "name": "Episode sessions",
+            "description": "Sessions watching episodes"
+          },
+          "movie_session_count": {
+            "name": "Movie sessions",
+            "description": "Sessions watching movies"
+          },
+          "currently_playing": {
+            "name": "Currently playing",
+            "description": "What users are currently watching or listening to"
+          },
+          "language": {
+            "name": "Language code",
+            "description": "Current Home Assistant language code"
+          },
+          "loaded_translation": {
+            "name": "Loaded translation",
+            "description": "Translation string loaded for idle state"
+          },
+          "polling_enabled": {
+            "name": "Polling enabled",
+            "description": "Whether polling is active"
+          },
+          "polling_interval_seconds": {
+            "name": "Polling interval",
+            "description": "Polling interval in seconds"
+          },
+          "last_updated": {
+            "name": "Last updated",
+            "description": "Timestamp of last update"
+          },
+          "friendly_name": {
+            "name": "Sensor name",
+            "description": "Sensor’s display name"
+          }
+        }
       }
     }
   }
