@@ -1,0 +1,106 @@
+
+{
+  "title": "Jellyfin Wiedergabestatus",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Mit Jellyfin verbinden",
+        "description": "Geben Sie die Verbindungsdetails für Ihren Jellyfin-Server ein.",
+        "data": {
+          "server_name": "Anzeigename des Servers",
+          "host": "Server-Host",
+          "port": "Server-Port",
+          "api_key": "Jellyfin API-Schlüssel",
+          "scan_interval": "Scan-Intervall",
+          "use_https": "HTTPS verwenden",
+          "ignore_ssl": "SSL-Fehler ignorieren"
+        }
+      }
+    },
+    "error": {
+      "invalid_input": "Bitte geben Sie einen gültigen Host und API-Schlüssel ein.",
+      "invalid_api_key": "Authentifizierung fehlgeschlagen – überprüfen Sie Ihren API-Schlüssel.",
+      "cannot_connect": "Verbindung zum Jellyfin-Server nicht möglich.",
+      "unknown": "Ein unbekannter Fehler ist aufgetreten. Bitte überprüfen Sie Ihre Protokolle.",
+      "duplicate_server_name": "Ein Server mit diesem Namen existiert bereits. Bitte wählen Sie einen eindeutigen Namen."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Jellyfin Server-Optionen",
+        "description": "Konfigurieren Sie Optionen für Ihren Jellyfin-Server.",
+        "data": {
+          "server_name": "Anzeigename des Servers",
+          "scan_interval": "Scan-Intervall",
+          "use_https": "HTTPS verwenden",
+          "ignore_ssl": "SSL-Fehler ignorieren",
+          "host": "Server-Host",
+          "port": "Server-Port",
+          "api_key": "Jellyfin API-Schlüssel",
+          "debug_payloads": "Ausführliche Payload-Protokollierung"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "jellyfin_playback_sensor": {
+        "name": "Jellyfin Wiedergabestatus",
+        "state_attributes": {
+          "idle_message": {
+            "name": "😴 Inaktiv – nichts zu sehen hier"
+          },
+          "watching": {
+            "name": "schaut"
+          },
+          "listening_to": {
+            "name": "hört sich an"
+          },
+          "debug_marker": {
+            "name": "Debug-Markierung"
+          },
+          "active_session_count": {
+            "name": "Aktive Sitzungen"
+          },
+          "audio_session_count": {
+            "name": "Audio-Sitzungen"
+          },
+          "episode_session_count": {
+            "name": "Episoden-Sitzungen"
+          },
+          "movie_session_count": {
+            "name": "Film-Sitzungen"
+          },
+          "currently_playing": {
+            "name": "Aktuell abgespielt"
+          },
+          "language": {
+            "name": "Sprachcode"
+          },
+          "loaded_translation": {
+            "name": "Geladene Übersetzung"
+          },
+          "polling_enabled": {
+            "name": "Abfragen aktiviert"
+          },
+          "polling_interval_seconds": {
+            "name": "Abfrageintervall"
+          },
+          "last_updated": {
+            "name": "Zuletzt aktualisiert"
+          },
+          "friendly_name": {
+            "name": "Sensorname"
+          }
+        }
+      },
+      "total_servers_sensor_name": {
+        "name": "Jellyfin Server Gesamt"
+      },
+      "error_servers_sensor_name": {
+        "name": "Jellyfin Server Fehler"
+      }
+    }
+  }
+}
