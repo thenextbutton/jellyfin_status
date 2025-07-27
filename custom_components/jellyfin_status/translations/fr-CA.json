@@ -1,0 +1,110 @@
+{
+  "title": "Capteur de lecture Jellyfin",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connexion à Jellyfin",
+        "description": "Veuillez entrer les renseignements de connexion de votre serveur Jellyfin.",
+        "data": {
+          "server_name": "Nom d'affichage du serveur",
+          "host": "Hôte du serveur",
+          "port": "Port du serveur",
+          "api_key": "Clé API Jellyfin",
+          "scan_interval": "Intervalle d’analyse",
+          "use_https": "Utiliser HTTPS",
+          "ignore_ssl": "Ignorer les erreurs SSL"
+        }
+      }
+    },
+    "error": {
+      "invalid_input": "Veuillez entrer un hôte et une clé API valides.",
+      "invalid_api_key": "Échec d’authentification — vérifiez votre clé API.",
+      "cannot_connect": "Impossible de se connecter au serveur Jellyfin.",
+      "unknown": "Une erreur inconnue est survenue. Consultez les journaux.",
+      "duplicate_server_name": "Un serveur avec ce nom existe déjà. Veuillez choisir un nom unique."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Options du serveur Jellyfin",
+        "description": "Configurez les options pour votre serveur Jellyfin.",
+        "data": {
+          "server_name": "Nom d'affichage du serveur",
+          "scan_interval": "Intervalle d’analyse",
+          "use_https": "Utiliser HTTPS",
+          "ignore_ssl": "Ignorer les erreurs SSL",
+          "host": "Hôte du serveur",
+          "port": "Port du serveur",
+          "api_key": "Clé API Jellyfin",
+          "custom_phrase_language": "Langue des phrases personnalisées",
+          "debug_payloads": "Activer le débogage du contenu"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "jellyfin_playback_sensor": {
+        "name": "État de lecture Jellyfin",
+        "state_attributes": {
+          "active_session_count": {
+            "name": "Sessions actives"
+          },
+          "audio_session_count": {
+            "name": "Sessions audio"
+          },
+          "episode_session_count": {
+            "name": "Sessions d'épisodes"
+          },
+          "movie_session_count": {
+            "name": "Sessions de films"
+          },
+          "currently_playing": {
+            "name": "Lecture en cours"
+          },
+          "polling_enabled": {
+            "name": "Interrogation activée"
+          },
+          "polling_interval_seconds": {
+            "name": "Intervalle d’interrogation (secondes)"
+          },
+          "last_updated": {
+            "name": "Dernière mise à jour"
+          },
+          "friendly_name": {
+            "name": "Nom du capteur"
+          }
+        }
+      },
+      "total_servers_sensor_name": {
+        "name": "Serveurs Jellyfin – total"
+      },
+      "error_servers_sensor_name": {
+        "name": "Serveurs Jellyfin en erreur"
+      },
+      "jellyfin_total_servers_sensor_name": {
+        "name": "Serveurs Jellyfin – total",
+        "state_attributes": {
+          "entities": {
+            "name": "Entités serveur"
+          },
+          "attached_entity": {
+            "name": "Entité associée"
+          }
+        }
+      },
+      "jellyfin_error_servers_sensor_name": {
+        "name": "Serveurs Jellyfin en erreur",
+        "state_attributes": {
+          "entities": {
+            "name": "Entités serveur"
+          },
+          "attached_entity": {
+            "name": "Entité associée"
+          }
+        }
+      }
+    }
+  }
+}

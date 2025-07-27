@@ -1,0 +1,110 @@
+{
+  "title": "Czujnik odtwarzania Jellyfin",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Połącz z Jellyfin",
+        "description": "Wprowadź dane połączenia z serwerem Jellyfin.",
+        "data": {
+          "server_name": "Nazwa serwera",
+          "host": "Host serwera",
+          "port": "Port serwera",
+          "api_key": "Klucz API Jellyfin",
+          "scan_interval": "Interwał skanowania",
+          "use_https": "Używaj HTTPS",
+          "ignore_ssl": "Ignoruj błędy SSL"
+        }
+      }
+    },
+    "error": {
+      "invalid_input": "Wprowadź prawidłowy host i klucz API.",
+      "invalid_api_key": "Błąd uwierzytelnienia — sprawdź klucz API.",
+      "cannot_connect": "Nie można połączyć się z serwerem Jellyfin.",
+      "unknown": "Wystąpił nieznany błąd. Sprawdź logi.",
+      "duplicate_server_name": "Serwer o tej nazwie już istnieje. Wybierz inną nazwę."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opcje serwera Jellyfin",
+        "description": "Skonfiguruj opcje dla serwera Jellyfin.",
+        "data": {
+          "server_name": "Nazwa serwera",
+          "scan_interval": "Interwał skanowania",
+          "use_https": "Używaj HTTPS",
+          "ignore_ssl": "Ignoruj błędy SSL",
+          "host": "Host serwera",
+          "port": "Port serwera",
+          "api_key": "Klucz API Jellyfin",
+          "custom_phrase_language": "Język niestandardowych fraz",
+          "debug_payloads": "Debugowanie danych"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "jellyfin_playback_sensor": {
+        "name": "Status odtwarzania Jellyfin",
+        "state_attributes": {
+          "active_session_count": {
+            "name": "Liczba aktywnych sesji"
+          },
+          "audio_session_count": {
+            "name": "Liczba sesji audio"
+          },
+          "episode_session_count": {
+            "name": "Liczba sesji odcinków"
+          },
+          "movie_session_count": {
+            "name": "Liczba sesji filmowych"
+          },
+          "currently_playing": {
+            "name": "Obecnie odtwarzane"
+          },
+          "polling_enabled": {
+            "name": "Polling włączony"
+          },
+          "polling_interval_seconds": {
+            "name": "Interwał pollingu"
+          },
+          "last_updated": {
+            "name": "Ostatnia aktualizacja"
+          },
+          "friendly_name": {
+            "name": "Nazwa czujnika"
+          }
+        }
+      },
+      "total_servers_sensor_name": {
+        "name": "Łączna liczba serwerów Jellyfin"
+      },
+      "error_servers_sensor_name": {
+        "name": "Serwery Jellyfin z błędami"
+      },
+      "jellyfin_total_servers_sensor_name": {
+        "name": "Łączna liczba serwerów Jellyfin",
+        "state_attributes": {
+          "entities": {
+            "name": "Encje serwera"
+          },
+          "attached_entity": {
+            "name": "Powiązana encja"
+          }
+        }
+      },
+      "jellyfin_error_servers_sensor_name": {
+        "name": "Serwery Jellyfin z błędami",
+        "state_attributes": {
+          "entities": {
+            "name": "Encje serwera"
+          },
+          "attached_entity": {
+            "name": "Powiązana encja"
+          }
+        }
+      }
+    }
+  }
+}

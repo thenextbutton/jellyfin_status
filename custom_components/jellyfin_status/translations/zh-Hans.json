@@ -1,0 +1,110 @@
+{
+  "title": "Jellyfin 播放传感器",
+  "config": {
+    "step": {
+      "user": {
+        "title": "连接到 Jellyfin",
+        "description": "请输入 Jellyfin 服务器的连接信息。",
+        "data": {
+          "server_name": "服务器显示名称",
+          "host": "服务器主机",
+          "port": "服务器端口",
+          "api_key": "Jellyfin API 密钥",
+          "scan_interval": "扫描间隔",
+          "use_https": "使用 HTTPS",
+          "ignore_ssl": "忽略 SSL 错误"
+        }
+      }
+    },
+    "error": {
+      "invalid_input": "请输入有效的主机地址和 API 密钥。",
+      "invalid_api_key": "身份验证失败 — 请检查你的 API 密钥。",
+      "cannot_connect": "无法连接到 Jellyfin 服务器。",
+      "unknown": "发生未知错误，请检查日志。",
+      "duplicate_server_name": "已有同名服务器。请选择一个唯一名称。"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Jellyfin 服务器选项",
+        "description": "配置 Jellyfin 服务器的相关选项。",
+        "data": {
+          "server_name": "服务器显示名称",
+          "scan_interval": "扫描间隔",
+          "use_https": "使用 HTTPS",
+          "ignore_ssl": "忽略 SSL 错误",
+          "host": "服务器主机",
+          "port": "服务器端口",
+          "api_key": "Jellyfin API 密钥",
+          "custom_phrase_language": "自定义短语语言",
+          "debug_payloads": "调试数据负载"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "jellyfin_playback_sensor": {
+        "name": "Jellyfin 播放状态",
+        "state_attributes": {
+          "active_session_count": {
+            "name": "活跃会话数"
+          },
+          "audio_session_count": {
+            "name": "音频会话数"
+          },
+          "episode_session_count": {
+            "name": "剧集会话数"
+          },
+          "movie_session_count": {
+            "name": "电影会话数"
+          },
+          "currently_playing": {
+            "name": "当前正在播放"
+          },
+          "polling_enabled": {
+            "name": "轮询已启用"
+          },
+          "polling_interval_seconds": {
+            "name": "轮询间隔（秒）"
+          },
+          "last_updated": {
+            "name": "最后更新时间"
+          },
+          "friendly_name": {
+            "name": "传感器名称"
+          }
+        }
+      },
+      "total_servers_sensor_name": {
+        "name": "Jellyfin 服务器总数"
+      },
+      "error_servers_sensor_name": {
+        "name": "发生错误的 Jellyfin 服务器"
+      },
+      "jellyfin_total_servers_sensor_name": {
+        "name": "Jellyfin 服务器总数",
+        "state_attributes": {
+          "entities": {
+            "name": "服务器实体"
+          },
+          "attached_entity": {
+            "name": "已关联实体"
+          }
+        }
+      },
+      "jellyfin_error_servers_sensor_name": {
+        "name": "发生错误的 Jellyfin 服务器",
+        "state_attributes": {
+          "entities": {
+            "name": "服务器实体"
+          },
+          "attached_entity": {
+            "name": "已关联实体"
+          }
+        }
+      }
+    }
+  }
+}

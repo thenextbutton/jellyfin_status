@@ -3,41 +3,41 @@
   "config": {
     "step": {
       "user": {
-        "title": "Mit Jellyfin verbinden",
-        "description": "Gib die Verbindungsdaten für deinen Jellyfin-Server ein.",
+        "title": "Verbindung mit Jellyfin",
+        "description": "Bitte gib die Verbindungsdetails für deinen Jellyfin-Server ein.",
         "data": {
           "server_name": "Server-Anzeigename",
           "host": "Server-Host",
           "port": "Server-Port",
           "api_key": "Jellyfin-API-Schlüssel",
-          "scan_interval": "Scan-Intervall",
+          "scan_interval": "Scanintervall",
           "use_https": "HTTPS verwenden",
           "ignore_ssl": "SSL-Fehler ignorieren"
         }
       }
     },
     "error": {
-      "invalid_input": "Bitte gib einen gültigen Host und API-Schlüssel ein.",
-      "invalid_api_key": "Authentifizierung fehlgeschlagen — überprüfe deinen API-Schlüssel.",
+      "invalid_input": "Bitte eine gültige Hostadresse und API-Schlüssel eingeben.",
+      "invalid_api_key": "Authentifizierung fehlgeschlagen – API-Schlüssel überprüfen.",
       "cannot_connect": "Verbindung zum Jellyfin-Server nicht möglich.",
-      "unknown": "Ein unbekannter Fehler ist aufgetreten. Bitte prüfe die Protokolle.",
-      "duplicate_server_name": "Ein Server mit diesem Namen existiert bereits. Bitte wähle einen eindeutigen Namen."
+      "unknown": "Ein unbekannter Fehler ist aufgetreten. Bitte Logs überprüfen.",
+      "duplicate_server_name": "Ein Server mit diesem Namen existiert bereits. Bitte einen eindeutigen Namen wählen."
     }
   },
   "options": {
     "step": {
       "init": {
         "title": "Jellyfin-Serveroptionen",
-        "description": "Konfiguriere die Optionen für deinen Jellyfin-Server.",
+        "description": "Konfiguriere die Einstellungen für deinen Jellyfin-Server.",
         "data": {
           "server_name": "Server-Anzeigename",
-          "scan_interval": "Scan-Intervall",
+          "scan_interval": "Scanintervall",
           "use_https": "HTTPS verwenden",
           "ignore_ssl": "SSL-Fehler ignorieren",
           "host": "Server-Host",
           "port": "Server-Port",
           "api_key": "Jellyfin-API-Schlüssel",
-          "custom_phrase_language": "Benutzerdefinierte Sprache für Ausdrücke",
+          "custom_phrase_language": "Benutzerdefinierte Ausdruckssprache",
           "debug_payloads": "Debug-Daten aktivieren"
         }
       }
@@ -55,19 +55,19 @@
             "name": "Audiositzungen"
           },
           "episode_session_count": {
-            "name": "Folgensitzungen"
+            "name": "Episodensitzungen"
           },
           "movie_session_count": {
             "name": "Filmsitzungen"
           },
           "currently_playing": {
-            "name": "Wird derzeit abgespielt"
+            "name": "Aktuell wiedergegeben"
           },
           "polling_enabled": {
-            "name": "Polling aktiviert"
+            "name": "Abfrage aktiviert"
           },
           "polling_interval_seconds": {
-            "name": "Polling-Intervall"
+            "name": "Abfrageintervall in Sekunden"
           },
           "last_updated": {
             "name": "Zuletzt aktualisiert"
@@ -78,13 +78,13 @@
         }
       },
       "total_servers_sensor_name": {
-        "name": "Jellyfin-Server gesamt"
+        "name": "Jellyfin-Server Gesamt"
       },
       "error_servers_sensor_name": {
         "name": "Jellyfin-Server mit Fehlern"
       },
       "jellyfin_total_servers_sensor_name": {
-        "name": "Jellyfin-Server gesamt",
+        "name": "Jellyfin-Server Gesamt",
         "state_attributes": {
           "entities": {
             "name": "Server-Entitäten"

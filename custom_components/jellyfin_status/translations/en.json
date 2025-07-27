@@ -37,7 +37,8 @@
           "host": "Server host",
           "port": "Server port",
           "api_key": "Jellyfin API key",
-          "debug_payloads": "Verbose Payload Logging"
+          "custom_phrase_language": "Custom phrase language",
+          "debug_payloads": "Debug payloads"
         }
       }
     }
@@ -47,18 +48,6 @@
       "jellyfin_playback_sensor": {
         "name": "Jellyfin Playback Status",
         "state_attributes": {
-          "idle_message": {
-            "name": "😴 Idle — nothing to see here"
-          },
-          "watching": {
-            "name": "is watching"
-          },
-          "listening_to": {
-            "name": "is listening to"
-          },
-          "debug_marker": {
-            "name": "Debug marker"
-          },
           "active_session_count": {
             "name": "Active sessions"
           },
@@ -73,12 +62,6 @@
           },
           "currently_playing": {
             "name": "Currently playing"
-          },
-          "language": {
-            "name": "Language code"
-          },
-          "loaded_translation": {
-            "name": "Loaded translation"
           },
           "polling_enabled": {
             "name": "Polling enabled"
@@ -98,7 +81,29 @@
         "name": "Jellyfin Servers Total"
       },
       "error_servers_sensor_name": {
-        "name": "Jellyfin Servers Error"
+        "name": "Jellyfin Servers With Errors"
+      },
+      "jellyfin_total_servers_sensor_name": {
+        "name": "Jellyfin Servers Total",
+         "state_attributes": {
+           "entities": {
+             "name": "Server Entities"
+           },
+           "attached_entity": {
+             "name": "Attached Entity"
+           }
+        }
+      },
+      "jellyfin_error_servers_sensor_name": {
+        "name": "Jellyfin Servers With Errors",
+          "state_attributes": {
+            "entities": {
+              "name": "Server Entities"
+            },
+            "attached_entity": {
+               "name": "Attached Entity"
+            }
+        } 
       }
     }
   }

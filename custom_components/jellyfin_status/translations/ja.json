@@ -1,0 +1,110 @@
+{
+  "title": "Jellyfin再生センサー",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Jellyfinに接続",
+        "description": "Jellyfinサーバーの接続情報を入力してください。",
+        "data": {
+          "server_name": "サーバー表示名",
+          "host": "サーバーホスト",
+          "port": "サーバーポート",
+          "api_key": "Jellyfin APIキー",
+          "scan_interval": "スキャン間隔",
+          "use_https": "HTTPSを使用する",
+          "ignore_ssl": "SSLエラーを無視する"
+        }
+      }
+    },
+    "error": {
+      "invalid_input": "有効なホストとAPIキーを入力してください。",
+      "invalid_api_key": "認証に失敗しました — APIキーを確認してください。",
+      "cannot_connect": "Jellyfinサーバーに接続できません。",
+      "unknown": "不明なエラーが発生しました。ログを確認してください。",
+      "duplicate_server_name": "この名前のサーバーはすでに存在します。別の名前を使用してください。"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Jellyfinサーバーオプション",
+        "description": "Jellyfinサーバーのオプションを設定します。",
+        "data": {
+          "server_name": "サーバー表示名",
+          "scan_interval": "スキャン間隔",
+          "use_https": "HTTPSを使用する",
+          "ignore_ssl": "SSLエラーを無視する",
+          "host": "サーバーホスト",
+          "port": "サーバーポート",
+          "api_key": "Jellyfin APIキー",
+          "custom_phrase_language": "カスタムフレーズ言語",
+          "debug_payloads": "デバッグペイロード"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "jellyfin_playback_sensor": {
+        "name": "Jellyfin再生ステータス",
+        "state_attributes": {
+          "active_session_count": {
+            "name": "アクティブセッション数"
+          },
+          "audio_session_count": {
+            "name": "オーディオセッション数"
+          },
+          "episode_session_count": {
+            "name": "エピソードセッション数"
+          },
+          "movie_session_count": {
+            "name": "ムービーセッション数"
+          },
+          "currently_playing": {
+            "name": "現在の再生状況"
+          },
+          "polling_enabled": {
+            "name": "ポーリングが有効"
+          },
+          "polling_interval_seconds": {
+            "name": "ポーリング間隔"
+          },
+          "last_updated": {
+            "name": "最終更新日時"
+          },
+          "friendly_name": {
+            "name": "センサー名"
+          }
+        }
+      },
+      "total_servers_sensor_name": {
+        "name": "Jellyfinサーバー総数"
+      },
+      "error_servers_sensor_name": {
+        "name": "エラーのあるJellyfinサーバー"
+      },
+      "jellyfin_total_servers_sensor_name": {
+        "name": "Jellyfinサーバー総数",
+        "state_attributes": {
+          "entities": {
+            "name": "サーバーエンティティ"
+          },
+          "attached_entity": {
+            "name": "接続済みエンティティ"
+          }
+        }
+      },
+      "jellyfin_error_servers_sensor_name": {
+        "name": "エラーのあるJellyfinサーバー",
+        "state_attributes": {
+          "entities": {
+            "name": "サーバーエンティティ"
+          },
+          "attached_entity": {
+            "name": "接続済みエンティティ"
+          }
+        }
+      }
+    }
+  }
+}

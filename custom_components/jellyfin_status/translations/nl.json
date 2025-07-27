@@ -1,0 +1,110 @@
+{
+  "title": "Jellyfin-afspeelsensor",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Verbind met Jellyfin",
+        "description": "Voer de verbindingsgegevens van je Jellyfin-server in.",
+        "data": {
+          "server_name": "Naam van de server",
+          "host": "Serverhost",
+          "port": "Serverpoort",
+          "api_key": "Jellyfin API-sleutel",
+          "scan_interval": "Scaninterval",
+          "use_https": "Gebruik HTTPS",
+          "ignore_ssl": "SSL-fouten negeren"
+        }
+      }
+    },
+    "error": {
+      "invalid_input": "Voer een geldige host en API-sleutel in.",
+      "invalid_api_key": "Authenticatie mislukt — controleer je API-sleutel.",
+      "cannot_connect": "Kan geen verbinding maken met de Jellyfin-server.",
+      "unknown": "Er is een onbekende fout opgetreden. Controleer je logboeken.",
+      "duplicate_server_name": "Er bestaat al een server met deze naam. Kies een unieke naam."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Jellyfin-serveropties",
+        "description": "Configureer de instellingen voor je Jellyfin-server.",
+        "data": {
+          "server_name": "Naam van de server",
+          "scan_interval": "Scaninterval",
+          "use_https": "Gebruik HTTPS",
+          "ignore_ssl": "SSL-fouten negeren",
+          "host": "Serverhost",
+          "port": "Serverpoort",
+          "api_key": "Jellyfin API-sleutel",
+          "custom_phrase_language": "Aangepaste taal voor zinnen",
+          "debug_payloads": "Foutopsporingsgegevens"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "jellyfin_playback_sensor": {
+        "name": "Jellyfin-afspeelstatus",
+        "state_attributes": {
+          "active_session_count": {
+            "name": "Actieve sessies"
+          },
+          "audio_session_count": {
+            "name": "Audiosessies"
+          },
+          "episode_session_count": {
+            "name": "Afleveringssessies"
+          },
+          "movie_session_count": {
+            "name": "Filmsessies"
+          },
+          "currently_playing": {
+            "name": "Momenteel afgespeeld"
+          },
+          "polling_enabled": {
+            "name": "Polling ingeschakeld"
+          },
+          "polling_interval_seconds": {
+            "name": "Polling-interval"
+          },
+          "last_updated": {
+            "name": "Laatst bijgewerkt"
+          },
+          "friendly_name": {
+            "name": "Naam van de sensor"
+          }
+        }
+      },
+      "total_servers_sensor_name": {
+        "name": "Totaal aantal Jellyfin-servers"
+      },
+      "error_servers_sensor_name": {
+        "name": "Jellyfin-servers met fouten"
+      },
+      "jellyfin_total_servers_sensor_name": {
+        "name": "Totaal aantal Jellyfin-servers",
+        "state_attributes": {
+          "entities": {
+            "name": "Serverentiteiten"
+          },
+          "attached_entity": {
+            "name": "Gekoppelde entiteit"
+          }
+        }
+      },
+      "jellyfin_error_servers_sensor_name": {
+        "name": "Jellyfin-servers met fouten",
+        "state_attributes": {
+          "entities": {
+            "name": "Serverentiteiten"
+          },
+          "attached_entity": {
+            "name": "Gekoppelde entiteit"
+          }
+        }
+      }
+    }
+  }
+}

@@ -18,9 +18,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     def get_opt(key, default=None):
-        if key in entry.options:
-            return entry.options[key]
-        return entry.data.get(key, default)
+        return entry.options.get(key, entry.data.get(key, default))
 
     host = get_opt("host")
     port = get_opt("port")
@@ -45,32 +43,35 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
 
     await coordinator.async_config_entry_first_refresh()
-    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
 
+    domain_data = hass.data.setdefault(DOMAIN, {})
+    domain_data[entry.entry_id] = coordinator
+
+    # 🧭 Trigger global sensor creation via platform
+    if not domain_data.get("global_sensors_created"):
+        domain_data["create_global_sensors"] = True
+
+    # 🔄 Manual refresh service
     async def handle_refresh(call):
         await coordinator.async_request_refresh()
-
     hass.services.async_register(DOMAIN, "refresh", handle_refresh)
 
-    # Listen for entity registry updates
+    # 🔊 Listen for entity registry updates
     def handle_registry_event(event):
         _LOGGER.debug("🔄 Entity registry updated, refreshing Jellyfin sensors...")
-        hass.loop.call_soon_threadsafe(
-            lambda: hass.async_create_task(coordinator.async_request_refresh())
-        )
+        hass.loop.call_soon_threadsafe(lambda: hass.async_create_task(coordinator.async_request_refresh()))
+    
+    coordinator._unsub_registry = hass.bus.async_listen(EVENT_ENTITY_REGISTRY_UPDATED, handle_registry_event)
 
-    unsub_registry = hass.bus.async_listen(EVENT_ENTITY_REGISTRY_UPDATED, handle_registry_event)
-    coordinator._unsub_registry = unsub_registry  # Optional: store in coordinator for cleanup
-
-    # Forward setup to sensor platform
+    # 🚀 Forward platform setup
     await hass.config_entries.async_forward_entry_setups(entry, ["sensor"])
     return True
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    coordinator = hass.data[DOMAIN].pop(entry.entry_id)
+    domain_data = hass.data.get(DOMAIN, {})
+    coordinator = domain_data.pop(entry.entry_id, None)
 
-    # Unsubscribe from registry events
-    if hasattr(coordinator, "_unsub_registry") and coordinator._unsub_registry:
+    if coordinator and hasattr(coordinator, "_unsub_registry"):
         coordinator._unsub_registry()
         coordinator._unsub_registry = None
 
@@ -81,4 +82,3 @@ async def async_update_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     await async_unload_entry(hass, entry)
     await async_setup_entry(hass, entry)
     return True
-

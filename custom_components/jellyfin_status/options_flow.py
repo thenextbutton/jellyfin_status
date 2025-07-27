@@ -15,11 +15,11 @@ class JellyfinOptionsFlowHandler(config_entries.OptionsFlow):
             return self._config_entry.data.get(key, default)
 
         if user_input is not None:
-            # 🚫 Ensure server_name is retained unmodified
+            # Ensure server_name is retained unmodified
             user_input["server_name"] = get_opt("server_name")
             return self.async_create_entry(title="", data=user_input)
         
-        # 📝 Option form schema (server_name omitted to hide from UI)
+        # Option form schema (server_name omitted to hide from UI)
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema({
