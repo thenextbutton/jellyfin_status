@@ -42,67 +42,63 @@
       }
     }
   },
-  "component": {
-    "jellyfin": {
-      "entity": {
-        "sensor": {
-          "jellyfin_playback_sensor": {
-            "name": "Jellyfin Playback Status",
-            "state_attributes": {
-              "idle_message": {
-                "name": "Watcha Looking at?"
-              },
-              "watching": {
-                "name": "is watching"
-              },
-              "listening_to": {
-                "name": "is listening to"
-              },
-              "debug_marker": {
-                "name": "Debug marker"
-              },
-              "active_session_count": {
-                "name": "Active sessions"
-              },
-              "audio_session_count": {
-                "name": "Audio sessions"
-              },
-              "episode_session_count": {
-                "name": "Episode sessions"
-              },
-              "movie_session_count": {
-                "name": "Movie sessions"
-              },
-              "currently_playing": {
-                "name": "Currently playing"
-              },
-              "language": {
-                "name": "Language code"
-              },
-              "loaded_translation": {
-                "name": "Loaded translation"
-              },
-              "polling_enabled": {
-                "name": "Polling enabled"
-              },
-              "polling_interval_seconds": {
-                "name": "Polling interval"
-              },
-              "last_updated": {
-                "name": "Last updated"
-              },
-              "friendly_name": {
-                "name": "Sensor name"
-              }
-            }
+  "entity": {
+    "sensor": {
+      "jellyfin_playback_sensor": {
+        "name": "Jellyfin Playback Status",
+        "state_attributes": {
+          "idle_message": {
+            "name": "😴 Idle — nothing to see here"
           },
-          "total_servers_sensor_name": {
-            "name": "Jellyfin Servers Total"
+          "watching": {
+            "name": "glued to"
           },
-          "error_servers_sensor_name": {
-            "name": "Jellyfin Servers Error"
+          "listening_to": {
+            "name": "wrapping their ears around"
+          },
+          "debug_marker": {
+            "name": "Debug marker"
+          },
+          "active_session_count": {
+            "name": "Active sessions"
+          },
+          "audio_session_count": {
+            "name": "Audio sessions"
+          },
+          "episode_session_count": {
+            "name": "Episode sessions"
+          },
+          "movie_session_count": {
+            "name": "Movie sessions"
+          },
+          "currently_playing": {
+            "name": "Currently playing"
+          },
+          "language": {
+            "name": "Language code"
+          },
+          "loaded_translation": {
+            "name": "Loaded translation"
+          },
+          "polling_enabled": {
+            "name": "Polling enabled"
+          },
+          "polling_interval_seconds": {
+            "name": "Polling interval"
+          },
+          "last_updated": {
+            "name": "Last updated"
+          },
+          "friendly_name": {
+            "name": "Sensor name"
           }
         }
+      },
+      "total_servers_sensor_name": {
+        "name": "Jellyfin Servers Total"
+      },
+      "error_servers_sensor_name": {
+        "name": "Jellyfin Servers Error"
       }
     }
   }

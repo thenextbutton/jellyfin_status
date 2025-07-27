@@ -1,6 +1,7 @@
 import logging
 import os
 import aiofiles.os
+import json  # Added: Import json for manual parsing
 from datetime import timedelta
 import asyncio
 
@@ -12,7 +13,7 @@ from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.entity_registry import async_get as async_get_registry
 from homeassistant.helpers.event import async_call_later, async_track_time_interval
-from homeassistant.helpers.translation import async_get_translations
+# Removed: from homeassistant.helpers.translation import async_get_translations
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.helpers.entity_registry import EVENT_ENTITY_REGISTRY_UPDATED
 
@@ -23,14 +24,8 @@ from .const import DOMAIN
 _LOGGER = logging.getLogger(__name__)
 SCAN_INTERVAL = timedelta(seconds=30)
 
-# Translation loader
-async def async_list_translation_files():
-    path = os.path.join(os.path.dirname(__file__), "translations")
-    try:
-        return [f for f in await aiofiles.os.listdir(path) if f.endswith(".json")]
-    except Exception as e:
-        _LOGGER.warning("Translation file listing failed: %s", e)
-        return []
+
+# Removed: async def async_list_translation_files(): as it's not used with manual loading
 
 # Registry-based Jellyfin sensor discovery
 async def get_jellyfin_sensor_entity_ids(hass: HomeAssistant) -> list[str]:
@@ -62,23 +57,60 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
         server_name = entry.options.get("server_name") or entry.title or "Jellyfin"
         slug = server_name.lower().replace(" ", "_").replace("-", "_")
 
-        # Use translation_key for the base sensor name, Home Assistant will handle its translation
-        self._attr_translation_key = "jellyfin_playback_sensor"
+        self._attr_name = f"{server_name} Status"
         self._attr_unique_id = f"{DOMAIN}_{slug}"
-        self._friendly_name = f"{server_name} Status" # Use for the attribute, not the primary name
-        self._translations = {}
-        self._language = None
+        self._friendly_name = self._attr_name
+        self._translations = {} # Re-initialized for manual loading
+        self._language = None # Re-initialized for manual loading
         self._attr_should_poll = False
 
     async def async_added_to_hass(self):
-        self._language = self.hass.config.language
-        # Load translations for the entire component
-        self._translations = await async_get_translations(
-            self.hass, self._language, f"custom_components.{DOMAIN}"
+        self._language = self.hass.config.language.split('-')[0] # Get 'en' from 'en-GB'
+
+        # --- Manual Translation Loading Workaround (Corrected Path) ---
+        translation_file_path = os.path.join(
+            os.path.dirname(__file__), # This correctly points to 'custom_components/jellyfin_status/'
+            "translations",
+            f"{self._language}.json"
         )
-        _LOGGER.debug("📁 Available translation files: %s", await async_list_translation_files())
-        _LOGGER.debug("Loaded translations for: %s", self._language)
-        _LOGGER.debug("Translation keys: %s", list(self._translations.keys())) # Log actual keys to verify
+        
+        # Fallback to 'en.json' if the specific language file doesn't exist
+        if not await aiofiles.os.path.exists(translation_file_path):
+            translation_file_path = os.path.join(
+                os.path.dirname(__file__), # Corrected path here too
+                "translations",
+                "en.json"
+            )
+
+        loaded_translations_data = {}
+        try:
+            async with aiofiles.open(translation_file_path, mode='r', encoding='utf-8') as f:
+                content = await f.read()
+                raw_json_data = json.loads(content)
+                
+                # Extract the relevant 'state_attributes' translations for jellyfin_playback_sensor
+                # Path: entity.sensor.jellyfin_playback_sensor.state_attributes
+                entity_path = raw_json_data.get("entity", {}).get("sensor", {}).get("jellyfin_playback_sensor", {})
+                if "state_attributes" in entity_path:
+                    loaded_translations_data = entity_path["state_attributes"]
+                    _LOGGER.debug("Manually loaded state_attributes translations: %s", loaded_translations_data)
+                else:
+                    _LOGGER.warning("Could not find entity.sensor.jellyfin_playback_sensor.state_attributes in %s.", translation_file_path)
+
+        except FileNotFoundError:
+            _LOGGER.error("Translation file not found at %s", translation_file_path)
+        except json.JSONDecodeError as e:
+            _LOGGER.error("Error decoding JSON from translation file %s: %s", translation_file_path, e)
+        except Exception as e:
+            _LOGGER.error("Unexpected error during manual translation loading: %s", e)
+        
+        self._translations = loaded_translations_data
+        # --- End of Manual Translation Loading Workaround ---
+
+        _LOGGER.debug("Loaded translations language: %s", self._language)
+        _LOGGER.debug("Final _translations dict: %s", self._translations)
+        _LOGGER.debug("Translation keys available for _t: %s", list(self._translations.keys()))
+
         self.coordinator.async_add_listener(self._handle_coordinator_update)
         await self.coordinator.async_request_refresh()
 
@@ -97,6 +129,13 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
     def _handle_coordinator_update(self) -> None:
         self.async_write_ha_state()
 
+    # Modified: _t method to use the manually loaded _translations
+    def _t(self, key: str, fallback: str = None) -> str:
+        # Navigate the dictionary to get the 'name' for the key
+        translated_value = self._translations.get(key, {}).get("name")
+        return translated_value if translated_value is not None else fallback if fallback is not None else key
+
+
     @property
     def state(self):
         sessions = self.coordinator.data or []
@@ -109,11 +148,7 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
 
     @property
     def extra_state_attributes(self):
-        # Base key for state attribute translations for this sensor
-        base_attr_key = f"component.{DOMAIN}.entity.sensor.jellyfin_playback_sensor.state_attributes."
-
         attrs = {
-            # Use the friendly_name attribute to show the server-specific name
             "friendly_name": self._friendly_name,
             "polling_enabled": self.coordinator.update_interval is not None,
             "polling_interval_seconds": int(self.coordinator.update_interval.total_seconds()) if self.coordinator.update_interval else 0,
@@ -135,12 +170,6 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
         sorted_sessions = sorted(active, key=lambda x: (x[0].lower(), x[1].get("Name", "").lower()))
         phrases = []
 
-        # Retrieve common translation phrases once
-        listening_to_phrase = self._translations.get(f"{base_attr_key}listening_to.name", "is listening to")
-        watching_phrase = self._translations.get(f"{base_attr_key}watching.name", "is watching")
-        idle_message_phrase = self._translations.get(f"{base_attr_key}idle_message.name", "😴 Idle — nothing to see here")
-
-
         for user, item, session in sorted_sessions:
             media_type = item.get("Type", "Unknown")
             title = item.get("Name", "Unknown")
@@ -148,19 +177,19 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
             emoji = {"Audio": "🎵", "Movie": "🎬", "Episode": "📺"}.get(media_type, "📺")
 
             if media_type == "Audio":
-                phrases.append(f"{emoji} {user} {listening_to_phrase} {artist} – {title}")
+                phrases.append(f"{emoji} {user} {self._t('listening_to', 'is listening to')} {artist} – {title}")
             elif media_type == "Episode":
                 series = item.get("SeriesName", "Unknown Series")
                 season = item.get("ParentIndexNumber")
                 episode = item.get("IndexNumber")
                 suffix = f" (S{season:02} E{episode:02})" if season and episode else ""
-                phrases.append(f"{emoji} {user} {watching_phrase} {series} – {title}{suffix}")
+                phrases.append(f"{emoji} {user} {self._t('watching', 'is watching')} {series} – {title}{suffix}")
             elif media_type == "Movie":
-                phrases.append(f"{emoji} {user} {watching_phrase} {title}")
+                phrases.append(f"{emoji} {user} {self._t('watching', 'is watching')} {title}")
             else:
-                phrases.append(f"📺 {user} {watching_phrase} {title}")
+                phrases.append(f"📺 {user} {self._t('watching', 'is watching')} {title}")
 
-        attrs["currently_playing"] = "\n".join(phrases) if phrases else idle_message_phrase
+        attrs["currently_playing"] = "\n".join(phrases) if phrases else self._t("idle_message", "😴 Idle — nothing to see here")
         attrs["active_session_count"] = len(active)
         attrs["audio_session_count"] = sum(1 for _, item, _ in active if item.get("Type") == "Audio")
         attrs["episode_session_count"] = sum(1 for _, item, _ in active if item.get("Type") == "Episode")
@@ -173,8 +202,6 @@ class JellyfinGlobalSensor(SensorEntity):
     def __init__(self, hass: HomeAssistant, sensor_type: str):
         self._hass = hass
         self._type = sensor_type
-        # _attr_translation_key correctly maps to total_servers_sensor_name/error_servers_sensor_name in en.json
-        # Home Assistant handles the translation of the entity's name based on this.
         self._attr_translation_key = f"{sensor_type}_servers_sensor_name"
         self._attr_unique_id = f"jellyfin_servers_{sensor_type}"
         self._attr_icon = "mdi:server"
