@@ -81,8 +81,6 @@ Available languages:
 | `de-CH`   | Swiss German 🇨🇭      |
 | `ja`      | Japanese 🇯🇵          |
 
-Sensor phrases like `is watching`, `is listening to`, and `Idle — nothing to see here` are fully localized.
-
 ---
 
 ## 📺 Telemetry Attributes
