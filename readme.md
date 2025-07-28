@@ -89,6 +89,9 @@ Sensor phrases like `is watching`, `is listening to`, and `Idle — nothing to s
 
 Example output:
 ```yaml
+Polling enabled: true
+Polling interval: 10
+Last updated: 28 July 2025 at 21:43:38
 currently_playing: |
   🎬 Bart: Interstellar
   📺 Homer: Wednesday's Child Is Full of Woe (S01 E01)
@@ -98,8 +101,6 @@ active_session_count: 3
 audio_session_count: 1
 movie_session_count: 1
 episode_session_count: 1
-polling_enabled: true
-last_updated: 2025-07-22T20:43:19Z
 ```
 
 
