@@ -74,6 +74,9 @@
           },
           "friendly_name": {
             "name": "传感器名称"
+          },
+          "provider": {
+            "name": "提供者"
           }
         }
       },

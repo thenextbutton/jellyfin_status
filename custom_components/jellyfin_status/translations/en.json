@@ -74,6 +74,9 @@
           },
           "friendly_name": {
             "name": "Sensor name"
+          },
+          "provider": {
+            "name": "Provider"
           }
         }
       },

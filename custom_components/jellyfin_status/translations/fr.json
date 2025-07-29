@@ -74,6 +74,9 @@
           },
           "friendly_name": {
             "name": "Nom du capteur"
+          },
+          "provider": {
+            "name": "Fournisseur"
           }
         }
       },
