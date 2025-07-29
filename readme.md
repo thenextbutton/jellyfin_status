@@ -37,6 +37,19 @@ custom_components/jellyfin_status/
 └── ...
 ```
 
+### 🔧 Add via HACS (Custom Repository)
+
+1. In Home Assistant, go to **HACS → Integrations**
+2. Click the **⋮ three-dot menu** (top right) → **Custom repositories**
+3. Add your GitHub repository URL  
+   (e.g. `https://github.com/thenextbutton/jellyfin_status`)
+4. Set category to **Integration**
+5. Click **Add**
+6. Now search for `Jellyfin Status` inside HACS and install it
+
+> 🔁 Don’t forget to **restart Home Assistant** after installation to ensure it’s fully loaded.
+
+
 ---
 
 ## 🧩 Configuration
