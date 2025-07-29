@@ -106,8 +106,7 @@ Provider: __jellyfin_status__
 
 
 
-<img width="300" alt="image" src="https://github.com/user-attachments/assets/4f8dec16-4da4-413e-8df1-22b2240e5875" />
-<img width="300" alt="image" src="https://github.com/user-attachments/assets/1c56dc76-0684-456c-9b0f-96790b276204" />
+<img width="300" alt="image" src="https://github.com/user-attachments/assets/b20f5cbf-b204-4a44-a1be-9d9f4155b9d2" />
 <img width="300" alt="image" src="https://github.com/user-attachments/assets/c15e8579-221f-44e0-afd5-6c30aa4d28b1" />
 <img width="300" alt="image" src="https://github.com/user-attachments/assets/4196088a-da27-458f-b90f-4ee1c8ca62da" />
 
