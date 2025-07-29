@@ -99,6 +99,8 @@ active_session_count: 3
 audio_session_count: 1
 movie_session_count: 1
 episode_session_count: 1
+Server version: 10.10.7
+Provider: __jellyfin_status__
 ```
 
 
@@ -118,10 +120,12 @@ Retreive a TOTAL of all Active sessions, Audio, Episodes and Movies across all t
 {% set ns = namespace(active=0, audio=0, episode=0, movie=0) %}
 {% for s in states.sensor %}
   {% set a = s.attributes %}
-  {% if a.get('active_session_count') is number %}{% set ns.active = ns.active + a.get('active_session_count') %}{% endif %}
-  {% if a.get('audio_session_count') is number %}{% set ns.audio = ns.audio + a.get('audio_session_count') %}{% endif %}
-  {% if a.get('episode_session_count') is number %}{% set ns.episode = ns.episode + a.get('episode_session_count') %}{% endif %}
-  {% if a.get('movie_session_count') is number %}{% set ns.movie = ns.movie + a.get('movie_session_count') %}{% endif %}
+  {% if a.get('provider') == '__jellyfin_status__' %}
+    {% if a.get('active_session_count') is number %}{% set ns.active = ns.active + a.get('active_session_count') %}{% endif %}
+    {% if a.get('audio_session_count') is number %}{% set ns.audio = ns.audio + a.get('audio_session_count') %}{% endif %}
+    {% if a.get('episode_session_count') is number %}{% set ns.episode = ns.episode + a.get('episode_session_count') %}{% endif %}
+    {% if a.get('movie_session_count') is number %}{% set ns.movie = ns.movie + a.get('movie_session_count') %}{% endif %}
+  {% endif %}
 {% endfor %}
 Active: {{ '%02d' % ns.active }}, Audio: {{ '%02d' % ns.audio }}, Episodes: {{ '%02d' % ns.episode }}, Movies: {{ '%02d' % ns.movie }}
 ```
