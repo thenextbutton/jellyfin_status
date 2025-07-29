@@ -75,6 +75,9 @@
           "friendly_name": {
             "name": "传感器名称"
           },
+          "server_version": {
+            "name": "服务器版本"
+          },
           "provider": {
             "name": "提供者"
           }

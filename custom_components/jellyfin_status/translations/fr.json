@@ -75,6 +75,9 @@
           "friendly_name": {
             "name": "Nom du capteur"
           },
+          "server_version": {
+            "name": "Version du serveur"
+          },
           "provider": {
             "name": "Fournisseur"
           }

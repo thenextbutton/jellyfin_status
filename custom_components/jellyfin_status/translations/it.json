@@ -75,6 +75,9 @@
           "friendly_name": {
             "name": "Nome del sensore"
           },
+          "server_version": {
+            "name": "Versione del server"
+          },
           "provider": {
             "name": "Fornitore"
           }

@@ -258,6 +258,7 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
         attrs["audio_session_count"] = sum(1 for _, item, _ in active if item.get("Type") == "Audio")
         attrs["episode_session_count"] = sum(1 for _, item, _ in active if item.get("Type") == "Episode")
         attrs["movie_session_count"] = sum(1 for _, item, _ in active if item.get("Type") == "Movie")
+        attrs["server_version"] = self.coordinator.application_version or "unknown"
         attrs["provider"] = "__jellyfin_status__"
 
         return attrs

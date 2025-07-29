@@ -45,6 +45,17 @@ class JellyfinCoordinator(DataUpdateCoordinator):
                     self.last_updated = datetime.now().isoformat()
                     _LOGGER.debug("Data refreshed at %s", self.last_updated)
                     if self.debug_payloads: _LOGGER.debug("Session payload → %s", data)
+                    
+                    # Capture server version
+                    self.application_version = next(
+                        (session.get("ApplicationVersion") for session in data if "ApplicationVersion" in session),
+                        None
+                    )
+
+                    server_name = self.config_entry.title if self.config_entry else self.address
+                    _LOGGER.debug("🔍 Jellyfin %s (%s) version detected: %s", server_name, self.address, self.application_version)
+
+                    
                     return data
         except Exception as err:
             _LOGGER.error("Data update failed — %s", err)
