@@ -1,8 +1,20 @@
 # 🎬 Jellyfin Status for Home Assistant
 
+[![HACS Badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
+[![Home Assistant Ready](https://img.shields.io/badge/Home%20Assistant-Ready-orange?logo=home-assistant&logoColor=white)](https://www.home-assistant.io/)
+[![Jellyfin Badge](https://img.shields.io/badge/Jellyfin-Community-blue?logo=jellyfin&logoColor=white)](https://jellyfin.org/)
+[![GitHub last commit](https://img.shields.io/github/last-commit/thenextbutton/jellyfin_status)](https://github.com/thenextbutton/jellyfin_status/commits/main)
+[![GitHub Issues](https://img.shields.io/github/issues/thenextbutton/jellyfin_status)](https://github.com/thenextbutton/jellyfin_status/issues)
+[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/thenextbutton/jellyfin_status)](https://github.com/thenextbutton/jellyfin_status/pulls)
+[![GitHub Stars](https://img.shields.io/github/stars/thenextbutton/jellyfin_status?style=social)](https://github.com/thenextbutton/jellyfin_status/stargazers)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/thenextbutton/jellyfin_status/blob/main/LICENSE) 
+
+---
+
 Track real-time playback sessions from your Jellyfin media server — complete with user-friendly status updates, emoji-enhanced telemetry, and full multilingual support.
 
 > ⚠️ **Note:** This integration is currently a work in progress. Functionality and translations may evolve as features are refined.
+
 
 ---
 
