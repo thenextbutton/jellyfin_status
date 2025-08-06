@@ -1,7 +1,7 @@
 # 🎬 Jellyfin Status for Home Assistant
 
 [![HACS Badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
-[![Home Assistant Ready](https://img.shields.io/badge/Home%20Assistant-Ready-orange?logo=home-assistant&logoColor=white)](https://www.home-assistant.io/)
+[![Home Assistant 2024.6.0](https://img.shields.io/badge/Home%20Assistant-Ready-orange?logo=home-assistant&logoColor=white)](https://www.home-assistant.io/)
 [![Jellyfin Badge](https://img.shields.io/badge/Jellyfin-Community-blue?logo=jellyfin&logoColor=white)](https://jellyfin.org/)
 [![GitHub last commit](https://img.shields.io/github/last-commit/thenextbutton/jellyfin_status)](https://github.com/thenextbutton/jellyfin_status/commits/main)
 [![GitHub Issues](https://img.shields.io/github/issues/thenextbutton/jellyfin_status)](https://github.com/thenextbutton/jellyfin_status/issues)
