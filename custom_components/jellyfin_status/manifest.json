@@ -5,6 +5,7 @@
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/thenextbutton/jellyfin_status",
+  "issue_tracker": "https://github.com/thenextbutton/jellyfin_status/issues",
   "iot_class": "local_polling",
   "requirements": ["aiohttp"],
   "version": "1.0.0"
