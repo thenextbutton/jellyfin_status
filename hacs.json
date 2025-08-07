@@ -1,13 +1,5 @@
 {
   "name": "Jellyfin Status",
   "content_in_root": false,
-  "domain": "jellyfin_status",
-  "integration_type": "integration",
-  "country": "GB",
-  "homeassistant": "2024.6.0",
-  "codeowners": ["@thenextbutton"],
-  "documentation": "https://github.com/thenextbutton/jellyfin_status",
-  "iot_class": "local_polling",
-  "icon": "https://raw.githubusercontent.com/thenextbutton/jellyfin_status/main/repository.png"
+  "homeassistant": "2024.6.0"
 }
-
