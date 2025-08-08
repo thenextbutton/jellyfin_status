@@ -90,6 +90,8 @@ target:
 
 Useful for scheduled syncs, conditional refreshes, or power-saving modes.
 
+Use my Blueprint for [Jellyfin Webhooks](https://github.com/thenextbutton/home_assistant/tree/main/blueprints/jellyfin_webhook_handler_v2) and use the Generic Playback Actions for playback start and playback stop events. Add an action to update the Jellyfin status sensor; this will refresh the data whenever the playback state changes.
+
 ---
 
 ## 🌐 Translations
