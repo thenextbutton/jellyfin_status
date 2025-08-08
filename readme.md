@@ -5,11 +5,16 @@
 [![Home Assistant 2024.6.0+](https://img.shields.io/badge/Home%20Assistant-2024.6.0+-orange?logo=home-assistant&logoColor=white)](https://www.home-assistant.io/)
 [![Jellyfin Badge](https://img.shields.io/badge/Jellyfin-Community-blue?logo=jellyfin&logoColor=white)](https://jellyfin.org/)
 [![GitHub release downloads](https://img.shields.io/github/downloads/thenextbutton/jellyfin_status/total)](https://github.com/thenextbutton/jellyfin_status/releases)
-[![GitHub last commit](https://img.shields.io/github/last-commit/thenextbutton/jellyfin_status)](https://github.com/thenextbutton/jellyfin_status/commits/main)
+
+[![GitHub release date](https://img.shields.io/github/release-date/thenextbutton/jellyfin_status)](https://github.com/thenextbutton/jellyfin_status/releases)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/thenextbutton/jellyfin_status)](https://github.com/thenextbutton/jellyfin_status/releases)
 [![GitHub Stars](https://img.shields.io/github/stars/thenextbutton/jellyfin_status?style=social)](https://github.com/thenextbutton/jellyfin_status/stargazers)
+
 [![GitHub Issues](https://img.shields.io/github/issues/thenextbutton/jellyfin_status)](https://github.com/thenextbutton/jellyfin_status/issues)
 [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/thenextbutton/jellyfin_status)](https://github.com/thenextbutton/jellyfin_status/pulls)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/thenextbutton/jellyfin_status/blob/main/LICENSE)
+
 ---
 
 <br>Track real-time playback sessions from your Jellyfin media server — complete with user-friendly status updates, emoji-enhanced telemetry, and full multilingual support.
