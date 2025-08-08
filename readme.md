@@ -1,4 +1,4 @@
-# <img src="https://raw.githubusercontent.com/thenextbutton/jellyfin_status/refs/heads/main/assets/images/jellyfin_status_logo.webp" alt="Jellyfin Status Logo" width="100"> <br> Jellyfin Status for Home Assistant
+# <img width="100" height="1024" alt="image" src="https://github.com/user-attachments/assets/4c9b6d8b-2429-4f06-ab5c-4035a08134be" /><br> Jellyfin Status for Home Assistant
 
 [![HACS Badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
 [![Home Assistant 2024.6.0+](https://img.shields.io/badge/Home%20Assistant-2024.6.0+-orange?logo=home-assistant&logoColor=white)](https://www.home-assistant.io/)
