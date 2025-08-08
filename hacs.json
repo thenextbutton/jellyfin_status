@@ -3,5 +3,6 @@
   "content_in_root": false,
   "homeassistant": "2024.6.0",
   "zip_release": true,
-  "filename": "jellyfin_status.zip"
+  "filename": "jellyfin_status.zip",
+  "hide_default_branch": true
 }
