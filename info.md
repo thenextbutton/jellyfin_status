@@ -38,7 +38,6 @@ Features and translations are evolving — feedback welcome!
 ## 🛠️ Maintainer
 
 Made with care by [@thenextbutton](https://github.com/thenextbutton)  
-Built for dashboards that speak human.
 
 ---
 
