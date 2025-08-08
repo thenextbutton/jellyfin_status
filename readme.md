@@ -1,4 +1,4 @@
-# 🎬 Jellyfin Status for Home Assistant
+# <img src="assets/images/jellyfin_status_logo.webp" alt="Jellyfin Status Logo" width="100"> <br> Jellyfin Status for Home Assistant
 
 [![HACS Badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
 [![Home Assistant 2024.6.0+](https://img.shields.io/badge/Home%20Assistant-2024.6.0+-orange?logo=home-assistant&logoColor=white)](https://www.home-assistant.io/)
@@ -11,7 +11,8 @@
 
 ---
 
-Track real-time playback sessions from your Jellyfin media server — complete with user-friendly status updates, emoji-enhanced telemetry, and full multilingual support.
+<br>Track real-time playback sessions from your Jellyfin media server — complete with user-friendly status updates, emoji-enhanced telemetry, and full multilingual support.
+<br><br>
 
 > ⚠️ **Note:** This integration is currently a work in progress. Functionality and translations may evolve as features are refined.
 
