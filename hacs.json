@@ -5,6 +5,5 @@
   "render_readme": true,
   "zip_release": true,
   "filename": "jellyfin_status.zip",
-  "hide_default_branch": true,
-  "homeassistant.documentation": "https://raw.githubusercontent.com/thenextbutton/jellyfin_status/main/README.md"
+  "hide_default_branch": true
 }
