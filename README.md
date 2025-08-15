@@ -20,8 +20,6 @@
 <br>Track real-time playback sessions from your Jellyfin media server — complete with user-friendly status updates, emoji-enhanced telemetry, and full multilingual support.
 <br><br>
 
-> ⚠️ **Note:** This integration is currently a work in progress. Functionality and translations may evolve as features are refined.
-
 
 ---
 
