@@ -76,9 +76,13 @@ custom_components/jellyfin_status/
 3. Fill in:  
    - Host and Port  
    - API key  
-   - Optional scan interval and HTTPS settings  
+   - Optional scan interval and HTTPS settings
+   - Playback format: `{play_icon} {media_icon} {user}: {artist} – {title} ({playing_position}/{playback_runtime}) {playback_percentage}`†
+   - idle message: `💤 Nothing Playing.`
 4. Save and enjoy live playback status in your dashboard  
 
+† playback format is used for producing the currently playing output in extended attriutes, when using {artist} this will be removed when a movie is playing and on an episode it will replace it with series name.
+ 
 ---
 
 ### 🛠️ Manual Scanner Updates
@@ -165,6 +169,32 @@ Result:
 ```
 Active: 00, Audio: 00, Episodes: 00, Movies: 00
 ```
+
+Using the playback states extended attribute
+
+```jinja2
+{% set sessions = state_attr('sensor.<server_name>_status', 'playback_states') %}
+{% if sessions %}
+{%- for user, data in sessions.items() %}
+{% set icon = "▶️" if data.play_state == "Playing" else "⏸️" %}
+{{ icon }} {{ user }}: {% if data.artist != "Unknown" %}{{ data.artist }} – {% endif %}{% if data.series != "Unknown" %}{{ data.series }} – {% endif %}{{ data.title }} ({{ data.position }} / {{ data.runtime }})
+{%- endfor %}
+{% else %}
+💤 Nothing Playing
+{% endif %}
+
+```
+
+Result:
+```
+▶️ username: The Amazing Spider-Man (00:39:50 / 02:16:17)
+▶️ username: Batman – Hi Diddle Riddle (00:00:20 / 00:25:19)
+▶️ username: The Beatles – Eight Days a Week (00:00:29 / 00:02:43)
+
+
+💤 Nothing Playing
+```
+
 ---
 
 ## ❤️ Credits
