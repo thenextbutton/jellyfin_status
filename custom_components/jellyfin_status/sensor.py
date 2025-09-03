@@ -298,9 +298,9 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
                 "title": title,
                 "series": series,
                 "play_state": status,
-                "position": self._format_position(ticks) if show_position and ticks > 0 else None,
-                "runtime": self._format_position(runtime) if runtime > 0 else None,
-                "progress_percent": f"({percent}%)" if percent is not None else None
+                "position": self._format_position(ticks) if ticks > 0 else "",
+                "runtime": self._format_position(runtime) if runtime > 0 else "",
+                "progress_percent": f"{percent}%" if percent is not None else ""
             }
 
         template = self.entry.options.get("playback_format", "").strip()
