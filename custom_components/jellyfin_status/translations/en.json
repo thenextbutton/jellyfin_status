@@ -38,7 +38,9 @@
           "port": "Server port",
           "api_key": "Jellyfin API key",
           "custom_phrase_language": "Custom phrase language",
-          "debug_payloads": "Debug payloads"
+          "debug_payloads": "Debug payloads",
+          "playback_format": "Playback format template",
+          "idle_message": "Idle message when nothing is playing"
         }
       }
     }
@@ -60,7 +62,7 @@
           "movie_session_count": {
             "name": "Movie sessions"
           },
-          "currently_playing": {
+          "playback_template": {
             "name": "Currently playing"
           },
           "polling_enabled": {

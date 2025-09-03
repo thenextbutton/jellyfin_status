@@ -4,6 +4,7 @@ import aiofiles.os
 import json
 from datetime import timedelta
 import asyncio
+import re
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -203,9 +204,12 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
     def state(self):
         sessions = self.coordinator.data or []
         for session in sessions:
+            item = session.get("NowPlayingItem")
             play_state = session.get("PlaybackState")
-            flags = session.get("PlayState", {})
-            if play_state == "Playing" or (not flags.get("IsPaused") and flags.get("PositionTicks", 0) > 0):
+            if not play_state:
+                is_paused = session.get("PlayState", {}).get("IsPaused")
+                play_state = "Paused" if is_paused else "Playing"
+            if item and play_state in ["Playing", "Paused"]:
                 return "Active"
         return "Idle"
 
@@ -215,53 +219,150 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
             "friendly_name": self._friendly_name,
             "polling_enabled": self.coordinator.update_interval is not None,
             "polling_interval_seconds": int(self.coordinator.update_interval.total_seconds()) if self.coordinator.update_interval else 0,
-            "last_updated": self.coordinator.last_updated
+            "last_updated": self.coordinator.last_updated,
+            "server_version": self.coordinator.application_version or "unknown"
         }
+
+        show_status = self.entry.options.get("display_playback_status", False)
+        show_position = self.entry.options.get("display_playback_position", False)
 
         sessions = self.coordinator.data or []
         active = []
 
         for session in sessions:
-            play_state = session.get("PlaybackState")
-            flags = session.get("PlayState", {})
             item = session.get("NowPlayingItem")
-            user = session.get("UserName", "Unknown")
+            play_state = session.get("PlaybackState")
 
-            if item and (play_state == "Playing" or (not flags.get("IsPaused") and flags.get("PositionTicks", 0) > 0)):
-                active.append((user, item, session))
+            if not play_state:
+                is_paused = session.get("PlayState", {}).get("IsPaused")
+                play_state = "Paused" if is_paused else "Playing"
+            else:
+                is_paused = play_state == "Paused"
+
+            if item and play_state in ["Playing", "Paused"]:
+                active.append((session.get("UserName", "Unknown"), item, session))
 
         sorted_sessions = sorted(active, key=lambda x: (x[0].lower(), x[1].get("Name", "").lower()))
         phrases = []
+        playback_states = {}
 
         for user, item, session in sorted_sessions:
             media_type = item.get("Type", "Unknown")
             title = item.get("Name", "Unknown")
-            artist = item.get("Artists", [None])[0] or item.get("AlbumArtist", "Unknown")
+            artist = next(iter(item.get("Artists", [])), item.get("AlbumArtist", "Unknown"))
             emoji = {"Audio": "🎵", "Movie": "🎬", "Episode": "📺"}.get(media_type, "📺")
+            series = item.get("SeriesName", "Unknown")
+
+            status = session.get("PlaybackState")
+            if not status:
+                is_paused = session.get("PlayState", {}).get("IsPaused")
+                status = "Paused" if is_paused else "Playing"
+
+            ticks = session.get("PlayState", {}).get("PositionTicks", 0)
+            runtime = item.get("RunTimeTicks", 0)
+
+            suffix_parts = []
+            if show_position:
+                if ticks > 0 and runtime > 0:
+                    pos_str = self._format_position(ticks)
+                    run_str = self._format_position(runtime)
+                    suffix_parts.append(f"{pos_str} / {run_str}")
+                elif ticks > 0:
+                    suffix_parts.append(self._format_position(ticks))
+
+            suffix = f"({' '.join(suffix_parts)})" if suffix_parts else ""
+
+            status_emoji = ""
+            if show_status:
+                status_emoji = "▶️" if status == "Playing" else "⏸️"
+
 
             if media_type == "Audio":
-                phrases.append(f"{emoji} {user}: {artist} – {title}")
+                phrases.append(f"{status_emoji} {emoji} {user}: {artist} – {title} {suffix}".strip())
             elif media_type == "Episode":
                 series = item.get("SeriesName", "Unknown Series")
                 season = item.get("ParentIndexNumber")
                 episode = item.get("IndexNumber")
-                suffix = f" (S{season:02} E{episode:02})" if season and episode else ""
-                phrases.append(f"{emoji} {user}: {series} – {title}{suffix}")
+                ep_suffix = f" (S{season:02} E{episode:02})" if season and episode else ""
+                phrases.append(f"{status_emoji} {emoji} {user}: {series} – {title}{ep_suffix} {suffix}".strip())
             elif media_type == "Movie":
-                phrases.append(f"{emoji} {user}: {title}")
+                phrases.append(f"{status_emoji} {emoji} {user}: {title} {suffix}".strip())
             else:
-                phrases.append(f"📺 {user}: {title}")
+                phrases.append(f"{status_emoji} 📺 {user}: {title} {suffix}".strip())
 
+            percent = int((ticks / runtime) * 100) if ticks > 0 and runtime > 0 else None
 
-        attrs["currently_playing"] = "\n".join(phrases) if phrases else "💤 Nothing Playing."
+            playback_states[user] = {
+                "media_type": media_type,
+                "artist": artist,
+                "title": title,
+                "series": series,
+                "play_state": status,
+                "position": self._format_position(ticks) if show_position and ticks > 0 else None,
+                "runtime": self._format_position(runtime) if runtime > 0 else None,
+                "progress_percent": f"({percent}%)" if percent is not None else None
+            }
+
+        template = self.entry.options.get("playback_format", "").strip()
+        template_phrases = []
+
+        for user, item, session in sorted_sessions:
+            media_type = item.get("Type", "Unknown")
+            title = item.get("Name", "Unknown")
+            if media_type == "Audio":
+                raw_artist = next(iter(item.get("Artists", [])), item.get("AlbumArtist", ""))
+            elif media_type == "Episode":
+                raw_artist = item.get("SeriesName", "")
+            else:
+                raw_artist = ""
+            
+            artist = raw_artist
+            
+            emoji = {"Audio": "🎵", "Movie": "🎬", "Episode": "📺"}.get(media_type, "📺")
+            status = session.get("PlaybackState") or ("Paused" if session.get("PlayState", {}).get("IsPaused") else "Playing")
+            ticks = session.get("PlayState", {}).get("PositionTicks", 0)
+            runtime = item.get("RunTimeTicks", 0)
+            percent = int((ticks / runtime) * 100) if ticks > 0 and runtime > 0 else None
+
+            context = {
+                "user": user,
+                "title": title,
+                "artist": artist,
+                "media_icon": emoji,
+                "play_icon": "▶️" if status == "Playing" else "⏸️",
+                "playing_position": self._format_position(ticks) if ticks > 0 else "",
+                "playback_runtime": self._format_position(runtime) if runtime > 0 else "",
+                "playback_percentage": f"{percent}%" if percent is not None else ""
+            }
+
+            try:
+                rendered = template.format(**context)
+                rendered = re.sub(r"^\s*–\s*", "", rendered)
+                rendered = re.sub(r":\s*–\s*", ": ", rendered) 
+                template_phrases.append(rendered.strip())
+            except KeyError as e:
+                template_phrases.append(f"⚠️ Invalid format: missing {{{e.args[0]}}}")
+
+        idle_message = self.entry.options.get("idle_message")
+        attrs["playback_template"] = "\n".join(template_phrases) if template_phrases else idle_message
         attrs["active_session_count"] = len(active)
         attrs["audio_session_count"] = sum(1 for _, item, _ in active if item.get("Type") == "Audio")
         attrs["episode_session_count"] = sum(1 for _, item, _ in active if item.get("Type") == "Episode")
         attrs["movie_session_count"] = sum(1 for _, item, _ in active if item.get("Type") == "Movie")
-        attrs["server_version"] = self.coordinator.application_version or "unknown"
+        attrs["playback_states"] = playback_states
         attrs["provider"] = "__jellyfin_status__"
 
         return attrs
+
+
+    def _format_position(self, ticks: int) -> str:
+        # Jellyfin uses 10,000,000 ticks per second
+        seconds = ticks // 10_000_000
+        hours, remainder = divmod(seconds, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        return f"{hours:02}:{minutes:02}:{seconds:02}"
+
+
 
 # Global Jellyfin diagnostics
 class JellyfinGlobalSensor(SensorEntity):

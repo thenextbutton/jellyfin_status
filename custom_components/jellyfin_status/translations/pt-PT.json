@@ -38,7 +38,9 @@
           "port": "Porta do servidor",
           "api_key": "Chave API do Jellyfin",
           "custom_phrase_language": "Idioma personalizado de expressões",
-          "debug_payloads": "Depurar conteúdo transmitido"
+          "debug_payloads": "Depurar conteúdo transmitido",
+          "playback_format": "Modelo de formato de reprodução",
+          "idle_message": "Mensagem de inatividade quando nada está a tocar"
         }
       }
     }
@@ -60,7 +62,7 @@
           "movie_session_count": {
             "name": "Sessões de filmes"
           },
-          "currently_playing": {
+          "playback_template": {
             "name": "A reproduzir atualmente"
           },
           "polling_enabled": {

@@ -38,7 +38,9 @@
           "port": "Server-Port",
           "api_key": "Jellyfin-API-Schlüssel",
           "custom_phrase_language": "Benutzerdefinierte Sprache für Ausdrücke",
-          "debug_payloads": "Debug-Daten aktivieren"
+          "debug_payloads": "Debug-Daten aktivieren",
+          "playback_format": "Wiedergabeformat-Vorlage",
+          "idle_message": "Leerlaufmeldung, wenn nichts abgespielt wird"
         }
       }
     }
@@ -60,7 +62,7 @@
           "movie_session_count": {
             "name": "Filmsitzungen"
           },
-          "currently_playing": {
+          "playback_template": {
             "name": "Wird derzeit abgespielt"
           },
           "polling_enabled": {

@@ -38,7 +38,9 @@
           "port": "Port du serveur",
           "api_key": "Clé API Jellyfin",
           "custom_phrase_language": "Langue des phrases personnalisées",
-          "debug_payloads": "Activer le débogage du contenu"
+          "debug_payloads": "Activer le débogage du contenu",
+          "playback_format": "Modèle de format de lecture",
+          "idle_message": "Message d’inactivité lorsqu’aucune lecture en cours"
         }
       }
     }
@@ -60,7 +62,7 @@
           "movie_session_count": {
             "name": "Sessions de films"
           },
-          "currently_playing": {
+          "playback_template": {
             "name": "Lecture en cours"
           },
           "polling_enabled": {

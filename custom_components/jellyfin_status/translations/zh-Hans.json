@@ -38,7 +38,9 @@
           "port": "服务器端口",
           "api_key": "Jellyfin API 密钥",
           "custom_phrase_language": "自定义短语语言",
-          "debug_payloads": "调试数据负载"
+          "debug_payloads": "调试数据负载",
+          "playback_format": "播放格式模板",
+          "idle_message": "无播放时的空闲消息"
         }
       }
     }
@@ -60,7 +62,7 @@
           "movie_session_count": {
             "name": "电影会话数"
           },
-          "currently_playing": {
+          "playback_template": {
             "name": "当前正在播放"
           },
           "polling_enabled": {

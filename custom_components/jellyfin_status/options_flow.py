@@ -15,11 +15,11 @@ class JellyfinOptionsFlowHandler(config_entries.OptionsFlow):
             return self._config_entry.data.get(key, default)
 
         if user_input is not None:
-            # Ensure server_name is retained unmodified
+            # Preserve server_name internally; not exposed in form
             user_input["server_name"] = get_opt("server_name")
             return self.async_create_entry(title="", data=user_input)
-        
-        # Option form schema (server_name omitted to hide from UI)
+
+        # Option form schema
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema({
@@ -54,7 +54,7 @@ class JellyfinOptionsFlowHandler(config_entries.OptionsFlow):
                         "suggested_value": get_opt("scan_interval"),
                         "translation_key": "scan_interval"
                     }
-                ): vol.In([0, 10, 15, 30, 60, 120]),
+                ): vol.In([0, 1, 5, 10, 15, 30, 60, 120]),
                 vol.Optional(
                     "use_https",
                     default=get_opt("use_https", False),
@@ -72,10 +72,26 @@ class JellyfinOptionsFlowHandler(config_entries.OptionsFlow):
                     }
                 ): bool,
                 vol.Optional(
+                    "playback_format",
+                    default=get_opt("playback_format", "{play_icon} {media_icon} {user}: {artist} – {title} ({playing_position}/{playback_runtime}) {playback_percentage}"),
+                    description={
+                        "suggested_value": get_opt("playback_format"),
+                                        "translation_key": "playback_format"
+                    }
+                ): str,
+                vol.Optional(
+                    "idle_message",
+                    default=get_opt("idle_message", "💤 Nothing Playing."),
+                    description={
+                        "suggested_value": get_opt("idle_message"),
+                        "translation_key": "idle_message"
+                    }
+                ): vol.All(str, vol.Length(min=0)),
+                vol.Optional(
                     "debug_payloads",
                     default=get_opt("debug_payloads", False),
                     description={
-                        "suggested_value": get_opt("debug_payloads", False),
+                        "suggested_value": get_opt("debug_payloads"),
                         "translation_key": "debug_payloads"
                     }
                 ): bool

@@ -38,7 +38,9 @@
           "port": "Port serwera",
           "api_key": "Klucz API Jellyfin",
           "custom_phrase_language": "Język niestandardowych fraz",
-          "debug_payloads": "Debugowanie danych"
+          "debug_payloads": "Debugowanie danych",
+          "playback_format": "Szablon formatu odtwarzania",
+          "idle_message": "Komunikat bezczynności, gdy nic nie jest odtwarzane"
         }
       }
     }
@@ -60,7 +62,7 @@
           "movie_session_count": {
             "name": "Liczba sesji filmowych"
           },
-          "currently_playing": {
+          "playback_template": {
             "name": "Obecnie odtwarzane"
           },
           "polling_enabled": {

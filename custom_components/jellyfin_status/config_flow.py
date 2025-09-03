@@ -73,7 +73,9 @@ class JellyfinConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             vol.Required("host", default=default_host): str,
             vol.Required("port", default=default_port): int,
             vol.Required("api_key", default=default_api_key): str,
-            vol.Required("scan_interval", default=default_scan): vol.In([0, 10, 15, 30, 60, 120]),
+            vol.Required("scan_interval", default=default_scan): vol.In([0, 1, 5, 10, 15, 30, 60, 120]),
+            vol.Optional("playback_format", default="{play_icon} {media_icon} {user}: {artist} – {title} ({playing_position}/{playback_runtime}) {playback_percentage}"): str,
+            vol.Optional("idle_message", default="💤 Nothing Playing."): str,
             vol.Optional("use_https", default=default_https): bool,
             vol.Optional("ignore_ssl", default=default_ignore_ssl): bool
         })

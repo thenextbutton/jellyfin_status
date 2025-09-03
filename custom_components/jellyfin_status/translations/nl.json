@@ -38,7 +38,9 @@
           "port": "Serverpoort",
           "api_key": "Jellyfin API-sleutel",
           "custom_phrase_language": "Aangepaste taal voor zinnen",
-          "debug_payloads": "Foutopsporingsgegevens"
+          "debug_payloads": "Foutopsporingsgegevens",
+          "playback_format": "Sjabloon voor afspeelformaat",
+          "idle_message": "Bericht bij geen actieve weergave"
         }
       }
     }
@@ -60,7 +62,7 @@
           "movie_session_count": {
             "name": "Filmsessies"
           },
-          "currently_playing": {
+          "playback_template": {
             "name": "Momenteel afgespeeld"
           },
           "polling_enabled": {

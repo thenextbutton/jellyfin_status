@@ -38,7 +38,9 @@
           "port": "サーバーポート",
           "api_key": "Jellyfin APIキー",
           "custom_phrase_language": "カスタムフレーズ言語",
-          "debug_payloads": "デバッグペイロード"
+          "debug_payloads": "デバッグペイロード",
+          "playback_format": "再生フォーマットのテンプレート",
+          "idle_message": "再生されていないときのアイドルメッセージ"
         }
       }
     }
