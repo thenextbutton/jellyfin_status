@@ -82,7 +82,21 @@ custom_components/jellyfin_status/
 4. Save and enjoy live playback status in your dashboard  
 
 † playback format is used for producing the currently playing output in extended attriutes, when using {artist} this will be removed when a movie is playing and on an episode it will replace it with series name.
- 
+
+---
+ ### 🧩 Template Fields
+
+| Field                  | Description                                  |
+|------------------------|----------------------------------------------|
+| `{user}`               | Jellyfin username                            |
+| `{title}`              | Media title                                  |
+| `{artist}`             | Artist name (audio) or series name (episode) |
+| `{media_icon}`         | Emoji for media type  🎬, 📺, 🎵             |
+| `{play_icon}`          | ▶️ or ⏸️ depending on playback state         |
+| `{playing_position}`   | Current playback time                        |
+| `{playback_runtime}`   | Total runtime                                |
+| `{playback_percentage}`| Progress as percentage                       |
+
 ---
 
 ### 🛠️ Manual Scanner Updates
