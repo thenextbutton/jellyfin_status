@@ -62,7 +62,7 @@
           "movie_session_count": {
             "name": "Sessões de filmes"
           },
-          "playback_template": {
+          "currently_playing": {
             "name": "A reproduzir atualmente"
           },
           "polling_enabled": {

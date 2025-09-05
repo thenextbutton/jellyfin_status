@@ -344,7 +344,7 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
                 template_phrases.append(f"⚠️ Invalid format: missing {{{e.args[0]}}}")
 
         idle_message = self.entry.options.get("idle_message")
-        attrs["playback_template"] = "\n".join(template_phrases) if template_phrases else idle_message
+        attrs["currently_playing"] = "\n".join(template_phrases) if template_phrases else idle_message
         attrs["active_session_count"] = len(active)
         attrs["audio_session_count"] = sum(1 for _, item, _ in active if item.get("Type") == "Audio")
         attrs["episode_session_count"] = sum(1 for _, item, _ in active if item.get("Type") == "Episode")

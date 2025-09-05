@@ -62,7 +62,7 @@
           "movie_session_count": {
             "name": "Filmsitzungen"
           },
-          "playback_template": {
+          "currently_playing": {
             "name": "Wird derzeit abgespielt"
           },
           "polling_enabled": {

@@ -62,7 +62,7 @@
           "movie_session_count": {
             "name": "Filmsessies"
           },
-          "playback_template": {
+          "currently_playing": {
             "name": "Momenteel afgespeeld"
           },
           "polling_enabled": {

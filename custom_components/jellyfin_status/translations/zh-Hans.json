@@ -62,7 +62,7 @@
           "movie_session_count": {
             "name": "电影会话数"
           },
-          "playback_template": {
+          "currently_playing": {
             "name": "当前正在播放"
           },
           "polling_enabled": {
