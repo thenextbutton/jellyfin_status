@@ -136,27 +136,44 @@ Available languages:
 ## 📺 Telemetry Attributes
 
 Example output:
-```yaml
+```text
 Polling enabled: true
 Polling interval: 10
-Last updated: 28 July 2025 at 21:43:38
-currently_playing: |
-  🎬 Bart: Interstellar
-  📺 Homer: Wednesday's Child Is Full of Woe (S01 E01)
-  🎵 Marge: Britney Spears – Oops!…I Did It Again
-
-active_session_count: 3
-audio_session_count: 1
-movie_session_count: 1
-episode_session_count: 1
+Last updated: 5 September 2025 at 20:17:13
 Server version: 10.10.7
+Currently playing: ▶️ 🎬 Homer: The Amazing Spider-Man (00:14:39/02:16:17) 10% 
+                   ▶️ 📺 Marge: The Good Place – Everything Is Fine (00:03:31/00:26:16) 13%
+Active sessions: 2
+Audio sessions: 0
+Episode sessions: 1
+Movie sessions: 1
+Playback states:
+Homer:
+media_type: Movie
+artist: Unknown
+title: The Amazing Spider-Man
+series: Unknown
+play_state: Playing
+position: '00:14:39'
+runtime: '02:16:17'
+progress_percent: 10%
+Marge:
+media_type: Episode
+artist: Unknown
+title: Everything Is Fine
+series: The Good Place
+play_state: Playing
+position: '00:03:31'
+runtime: '00:26:16'
+progress_percent: 13%
 Provider: __jellyfin_status__
 ```
 
 
 
 
-<img width="300" alt="image" src="https://github.com/user-attachments/assets/b20f5cbf-b204-4a44-a1be-9d9f4155b9d2" />
+<img width="300" alt="image" src="https://github.com/user-attachments/assets/3757a367-9d29-419a-ab34-98977c784a78" />
+<br>
 <img width="300" alt="image" src="https://github.com/user-attachments/assets/c15e8579-221f-44e0-afd5-6c30aa4d28b1" />
 <img width="300" alt="image" src="https://github.com/user-attachments/assets/4196088a-da27-458f-b90f-4ee1c8ca62da" />
 
