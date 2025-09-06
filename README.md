@@ -81,7 +81,7 @@ custom_components/jellyfin_status/
    - idle message: `💤 Nothing Playing.`
 4. Save and enjoy live playback status in your dashboard  
 
-† playback format is used for producing the currently playing output in extended attriutes, when using {artist} this will be removed when a movie is playing and on an episode it will replace it with series name.
+† playback format is used for producing the currently playing output in extended attributes, when using {artist} this will be removed when a movie is playing and on an episode it will replace it with series name.
 
 ---
  ### 🧩 Template Fields
