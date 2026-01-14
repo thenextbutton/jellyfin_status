@@ -15,6 +15,8 @@ class JellyfinCoordinator(DataUpdateCoordinator):
         self.use_https = use_https
         self.ignore_ssl = ignore_ssl
         self.last_updated = None
+        self.library_counts = {}  # Initialize empty dictionary
+        self.application_version = None
         self.debug_payloads = entry.options.get("debug_payloads", False) if entry else False
 
         connector = aiohttp.TCPConnector(verify_ssl=not ignore_ssl)
@@ -34,32 +36,40 @@ class JellyfinCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self):
         """Fetches active Jellyfin sessions via REST API."""
         protocol = "https" if self.use_https else "http"
-        url = f"{protocol}://{self.address}/Sessions?api_key={self.api_key}"
+        base_url = f"{protocol}://{self.address}"
+        sessions_url = f"{base_url}/Sessions?api_key={self.api_key}"
+        counts_url = f"{base_url}/Items/Counts?api_key={self.api_key}"
 
-        _LOGGER.debug("Polling Jellyfin → %s (SSL verify: %s)", url, not self.ignore_ssl)
+        _LOGGER.debug("Polling Jellyfin sessions and counts (SSL verify: %s)", not self.ignore_ssl)
 
         try:
             async with async_timeout.timeout(10):
-                async with self.session.get(url) as resp:
-                    data = await resp.json()
-                    self.last_updated = datetime.now().isoformat()
-                    _LOGGER.debug("Data refreshed at %s", self.last_updated)
-                    if self.debug_payloads: _LOGGER.debug("Session payload → %s", data)
-                    
-                    # Capture server version
-                    self.application_version = next(
-                        (session.get("ApplicationVersion") for session in data if "ApplicationVersion" in session),
-                        None
-                    )
+                # Fetch Active Sessions
+                async with self.session.get(sessions_url) as resp:
+                    session_data = await resp.json()
+                
+                # Fetch Library Counts
+                async with self.session.get(counts_url) as resp:
+                    self.library_counts = await resp.json()
 
-                    server_name = self.config_entry.title if self.config_entry else self.address
-                    _LOGGER.debug("🔍 Jellyfin %s (%s) version detected: %s", server_name, self.address, self.application_version)
+                # Update timestamp
+                self.last_updated = datetime.now().isoformat()
+                
+                if self.debug_payloads: 
+                    _LOGGER.debug("Session payload → %s", session_data)
+                    _LOGGER.debug("Counts payload → %s", self.library_counts)
 
-                    
-                    return data
+                # Capture server version (Keep previous version if current list is empty)
+                self.application_version = next(
+                    (s.get("ApplicationVersion") for s in session_data if s.get("ApplicationVersion")),
+                    self.application_version
+                )
+
+                return session_data
+
         except Exception as err:
-            _LOGGER.error("Data update failed — %s", err)
-            raise UpdateFailed(f"Error fetching Jellyfin data: {err}")
+            _LOGGER.error("Jellyfin update failed: %s", err)
+            raise UpdateFailed(f"Error communicating with Jellyfin: {err}")
 
     async def async_close(self):
         """Closes HTTP session on unload."""

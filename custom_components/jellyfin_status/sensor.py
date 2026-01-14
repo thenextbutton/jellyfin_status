@@ -82,7 +82,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
         ]
         entities.extend(global_sensors)
         domain_data["global_sensors_created"] = True
-        _LOGGER.info("🌍 Global Jellyfin sensors created via sensor platform (self-healing)")
+        _LOGGER.info("π Global Jellyfin sensors created via sensor platform (self-healing)")
 
     async_add_entities(entities)
 
@@ -90,11 +90,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
         if event.data.get("action") == "remove":
             removed_id = event.data.get("entity_id")
             if removed_id in ["sensor.jellyfin_servers_total", "sensor.jellyfin_servers_error"]:
-                _LOGGER.warning("🩺 Global Jellyfin sensor removed: %s", removed_id)
+                _LOGGER.warning("π©Ί Global Jellyfin sensor removed: %s", removed_id)
 
                 new_sensor = JellyfinGlobalSensor(hass, removed_id.split("_")[-1])
                 async_add_entities([new_sensor])
-                _LOGGER.info("🛠️ Re-added global sensor after deletion: %s", removed_id)
+                _LOGGER.info("π οΈ Re-added global sensor after deletion: %s", removed_id)
 
     hass.bus.async_listen(EVENT_ENTITY_REGISTRY_UPDATED, handle_registry_action)
 
@@ -112,7 +112,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
                     JellyfinGlobalSensor(hass, "error")
                 ]
                 async_add_entities(global_sensors)
-                _LOGGER.info("🛠️ Global sensors re-created via background restore")
+                _LOGGER.info("π οΈ Global sensors re-created via background restore")
 
     async_track_time_interval(hass, restore_globals_if_missing, timedelta(minutes=5))
 
@@ -199,156 +199,201 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
         translated_value = self._translations.get(key, {}).get("name")
         return translated_value if translated_value is not None else fallback if fallback is not None else key
 
-
     @property
-    def state(self):
+    def native_value(self):
+        """Return the main state of the sensor (Active or Idle)."""
         sessions = self.coordinator.data or []
+        active_count = 0
+
         for session in sessions:
             item = session.get("NowPlayingItem")
-            play_state = session.get("PlaybackState")
-            if not play_state:
-                is_paused = session.get("PlayState", {}).get("IsPaused")
-                play_state = "Paused" if is_paused else "Playing"
+            # Using the same logic as the attributes to define 'Active'
+            play_state = session.get("PlaybackState") or ("Paused" if session.get("PlayState", {}).get("IsPaused") else "Playing")
             if item and play_state in ["Playing", "Paused"]:
-                return "Active"
-        return "Idle"
+                active_count += 1
+
+        return "Active" if active_count > 0 else "Idle"
 
     @property
     def extra_state_attributes(self):
+
+        # Initialize base attributes
+        counts = self.coordinator.library_counts or {}
+
         attrs = {
             "friendly_name": self._friendly_name,
             "polling_enabled": self.coordinator.update_interval is not None,
             "polling_interval_seconds": int(self.coordinator.update_interval.total_seconds()) if self.coordinator.update_interval else 0,
             "last_updated": self.coordinator.last_updated,
-            "server_version": self.coordinator.application_version or "unknown"
+            "server_version": self.coordinator.application_version or "unknown",
+
+            # --- Library Statistics ---
+            "total_movies": counts.get("MovieCount", 0),
+            "total_tv_shows": counts.get("SeriesCount", 0),
+            "total_episodes": counts.get("EpisodeCount", 0),
+            "total_albums": counts.get("AlbumCount", 0),
+            "total_tracks": counts.get("SongCount", 0)
         }
 
         show_status = self.entry.options.get("display_playback_status", False)
         show_position = self.entry.options.get("display_playback_position", False)
+        template = self.entry.options.get("playback_format", "").strip()
 
         sessions = self.coordinator.data or []
         active = []
 
+        # Filter for truly active sessions
         for session in sessions:
             item = session.get("NowPlayingItem")
-            play_state = session.get("PlaybackState")
-
-            if not play_state:
-                is_paused = session.get("PlayState", {}).get("IsPaused")
-                play_state = "Paused" if is_paused else "Playing"
-            else:
-                is_paused = play_state == "Paused"
-
+            # Determine play state (Playing/Paused)
+            play_state = session.get("PlaybackState") or ("Paused" if session.get("PlayState", {}).get("IsPaused") else "Playing")
             if item and play_state in ["Playing", "Paused"]:
                 active.append((session.get("UserName", "Unknown"), item, session))
 
+        # Process sorted sessions
         sorted_sessions = sorted(active, key=lambda x: (x[0].lower(), x[1].get("Name", "").lower()))
-        phrases = []
         playback_states = {}
-
-        for user, item, session in sorted_sessions:
-            media_type = item.get("Type", "Unknown")
-            title = item.get("Name", "Unknown")
-            artist = next(iter(item.get("Artists", [])), item.get("AlbumArtist", "Unknown"))
-            emoji = {"Audio": "🎵", "Movie": "🎬", "Episode": "📺"}.get(media_type, "📺")
-            series = item.get("SeriesName", "Unknown")
-
-            status = session.get("PlaybackState")
-            if not status:
-                is_paused = session.get("PlayState", {}).get("IsPaused")
-                status = "Paused" if is_paused else "Playing"
-
-            ticks = session.get("PlayState", {}).get("PositionTicks", 0)
-            runtime = item.get("RunTimeTicks", 0)
-
-            suffix_parts = []
-            if show_position:
-                if ticks > 0 and runtime > 0:
-                    pos_str = self._format_position(ticks)
-                    run_str = self._format_position(runtime)
-                    suffix_parts.append(f"{pos_str} / {run_str}")
-                elif ticks > 0:
-                    suffix_parts.append(self._format_position(ticks))
-
-            suffix = f"({' '.join(suffix_parts)})" if suffix_parts else ""
-
-            status_emoji = ""
-            if show_status:
-                status_emoji = "▶️" if status == "Playing" else "⏸️"
-
-
-            if media_type == "Audio":
-                phrases.append(f"{status_emoji} {emoji} {user}: {artist} – {title} {suffix}".strip())
-            elif media_type == "Episode":
-                series = item.get("SeriesName", "Unknown Series")
-                season = item.get("ParentIndexNumber")
-                episode = item.get("IndexNumber")
-                ep_suffix = f" (S{season:02} E{episode:02})" if season and episode else ""
-                phrases.append(f"{status_emoji} {emoji} {user}: {series} – {title}{ep_suffix} {suffix}".strip())
-            elif media_type == "Movie":
-                phrases.append(f"{status_emoji} {emoji} {user}: {title} {suffix}".strip())
-            else:
-                phrases.append(f"{status_emoji} 📺 {user}: {title} {suffix}".strip())
-
-            percent = int((ticks / runtime) * 100) if ticks > 0 and runtime > 0 else None
-
-            playback_states[user] = {
-                "media_type": media_type,
-                "artist": artist,
-                "title": title,
-                "series": series,
-                "play_state": status,
-                "position": self._format_position(ticks) if ticks > 0 else "",
-                "runtime": self._format_position(runtime) if runtime > 0 else "",
-                "progress_percent": f"{percent}%" if percent is not None else ""
-            }
-
-        template = self.entry.options.get("playback_format", "").strip()
         template_phrases = []
 
         for user, item, session in sorted_sessions:
+            # Data Extraction
             media_type = item.get("Type", "Unknown")
             title = item.get("Name", "Unknown")
-            if media_type == "Audio":
-                raw_artist = next(iter(item.get("Artists", [])), item.get("AlbumArtist", ""))
-            elif media_type == "Episode":
-                raw_artist = item.get("SeriesName", "")
-            else:
-                raw_artist = ""
+            artist = next(iter(item.get("Artists", [])), item.get("AlbumArtist", "Unknown"))
+            series = item.get("SeriesName", "Unknown")
             
-            artist = raw_artist
-            
-            emoji = {"Audio": "🎵", "Movie": "🎬", "Episode": "📺"}.get(media_type, "📺")
-            status = session.get("PlaybackState") or ("Paused" if session.get("PlayState", {}).get("IsPaused") else "Playing")
+            # Timing
             ticks = session.get("PlayState", {}).get("PositionTicks", 0)
             runtime = item.get("RunTimeTicks", 0)
-            percent = int((ticks / runtime) * 100) if ticks > 0 and runtime > 0 else None
+            percent = int((ticks / runtime) * 100) if ticks > 0 and runtime > 0 else 0
+
+            # Transcoding Info
+            trans_info = session.get("TranscodingInfo", {})
+            trans_ticks = trans_info.get("TranscodingPositionTicks", 0)
+            play_method = session.get("PlayState", {}).get("PlayMethod", "Unknown")
+            try:
+                trans_fps = int(float(trans_info.get("Framerate", 0)))
+            except (TypeError, ValueError):
+                trans_fps = 0
+
+            if "CompletionPercentage" in trans_info:
+                t_percent_val = f"{round(trans_info.get('CompletionPercentage'), 1)}%"
+            elif play_method == "Transcode":
+                t_percent_val = "100%"
+            else:
+                t_percent_val = "0%"
+
+            # Determine Resolution and HDR
+            vid_stream = next((s for s in item.get("MediaStreams", []) if s.get("Type") == "Video"), {})
+            width = vid_stream.get("Width", 0)
+            v_range = vid_stream.get("VideoRange", "")
+            
+            # Map width to common names
+            if width >= 3840: res = "4K"
+            elif width >= 1920: res = "1080p"
+            elif width >= 1280: res = "720p"
+            elif width >= 720: res = "480p"
+            else: res = f"{width}p" if width > 0 else ""
+
+            # Add HDR/DV tag if applicable
+            quality = f"{res} {v_range}" if "SDR" not in v_range and v_range else res
+            quality = quality.strip()
+
+            # Status Icons
+            status = session.get("PlaybackState") or ("Paused" if session.get("PlayState", {}).get("IsPaused") else "Playing")
+            emoji = {"Audio": "π΅", "Movie": "π¬", "Episode": "πΊ"}.get(media_type, "πΊ")
+            status_emoji = "βΆοΈ" if status == "Playing" else "βΈοΈ"
+
+            # Fill the raw data dictionary (playback_states)
+            # Start with media_type to set the foundation
+            user_data = {"media_type": media_type}
+
+            # --- Primary Metadata (Quality, Title, Series/Artist, Year) ---
+            if media_type in ["Movie", "Episode"] and quality:
+                user_data["quality"] = quality
+
+            user_data["title"] = title
+
+            if media_type == "Episode":
+                if series and series != "Unknown":
+                    user_data["series"] = series
+                
+                p_idx = item.get("ParentIndexNumber") # Season
+                idx = item.get("IndexNumber")       # Episode
+                if p_idx is not None:
+                    user_data["season_number"] = p_idx
+                if idx is not None:
+                    user_data["episode_number"] = idx
+
+            elif media_type == "Audio":
+                if artist and artist != "Unknown":
+                    user_data["artist"] = artist
+
+            if item.get("ProductionYear"):
+                user_data["year"] = item.get("ProductionYear")
+
+            # --- Playback State (The "Live" Data) ---
+            user_data.update({
+                "play_state": status,
+                "position": self._format_position(ticks) if ticks > 0 else "00:00:00",
+                "runtime": self._format_position(runtime) if runtime > 0 else "00:00:00",
+                "progress_percent": f"{percent}%",
+                "play_method": play_method,
+            })
+
+            # --- Transcoding Technicals (The "Backend" Data) ---
+            if play_method == "Transcode":
+
+                user_data["transcode_progress"] = t_percent_val
+                
+                # Only add the FPS key if transcoding is still in progress
+                if t_percent_val != "100%":
+                    user_data["transcode_fps"] = trans_fps
+
+                user_data["transcode_reasons"] = ", ".join(trans_info.get("TranscodeReasons", []))
+
+            playback_states[user] = user_data
+
+            # Fill the Template Context
+            t_info = f" [β‘ {trans_fps} fps]" if play_method == "Transcode" and trans_fps > 0 else ""
 
             context = {
                 "user": user,
                 "title": title,
-                "artist": artist,
+                "quality": quality,
+                "series": user_data.get("series", ""),
+                "season": user_data.get("season_number", ""),
+                "episode": user_data.get("episode_number", ""),
+                "artist": user_data.get("artist", ""),
                 "media_icon": emoji,
-                "play_icon": "▶️" if status == "Playing" else "⏸️",
-                "playing_position": self._format_position(ticks) if ticks > 0 else "",
-                "playback_runtime": self._format_position(runtime) if runtime > 0 else "",
-                "playback_percentage": f"{percent}%" if percent is not None else ""
+                "play_icon": status_emoji,
+                "playing_position": user_data["position"],
+                "playback_runtime": user_data["runtime"],
+                "playback_percentage": user_data["progress_percent"],
+                "play_method": play_method,
+                "transcode_fps": trans_fps,
+                "transcode_percentage": user_data.get("transcode_progress", "0%"),
+                "transcode_info": t_info 
             }
 
-            try:
-                rendered = template.format(**context)
-                rendered = re.sub(r"^\s*–\s*", "", rendered)
-                rendered = re.sub(r":\s*–\s*", ": ", rendered) 
-                template_phrases.append(rendered.strip())
-            except KeyError as e:
-                template_phrases.append(f"⚠️ Invalid format: missing {{{e.args[0]}}}")
+            # Render the user-defined template
+            if template:
+                try:
+                    rendered = template.format(**context)
+                    # Clean up common string artifacts
+                    rendered = re.sub(r"^\s*[β-]\s*", "", rendered)
+                    rendered = re.sub(r":\s*[β-]\s*", ": ", rendered) 
+                    template_phrases.append(rendered.strip())
+                except KeyError as e:
+                    template_phrases.append(f"β οΈ Missing key: {{{e.args[0]}}}")
 
-        idle_message = self.entry.options.get("idle_message")
-        attrs["currently_playing"] = "\n".join(template_phrases) if template_phrases else idle_message
+        # Final assignment
+        idle_msg = self.entry.options.get("idle_message", "Idle")
+        attrs["currently_playing"] = "\n".join(template_phrases) if template_phrases else idle_msg
         attrs["active_session_count"] = len(active)
-        attrs["audio_session_count"] = sum(1 for _, item, _ in active if item.get("Type") == "Audio")
-        attrs["episode_session_count"] = sum(1 for _, item, _ in active if item.get("Type") == "Episode")
-        attrs["movie_session_count"] = sum(1 for _, item, _ in active if item.get("Type") == "Movie")
+        attrs["audio_session_count"] = sum(1 for _, itm, _ in active if itm.get("Type") == "Audio")
+        attrs["episode_session_count"] = sum(1 for _, itm, _ in active if itm.get("Type") == "Episode")
+        attrs["movie_session_count"] = sum(1 for _, itm, _ in active if itm.get("Type") == "Movie")
         attrs["playback_states"] = playback_states
         attrs["provider"] = "__jellyfin_status__"
 
@@ -383,8 +428,8 @@ class JellyfinGlobalSensor(SensorEntity):
         self._attached_entity_id = None
         self._last_entity_ids = []
 
-        _LOGGER.debug("🔍 Translation key being set: %s", self._attr_translation_key)
-        _LOGGER.debug("🧪 Sensor type received: %s", sensor_type)
+        _LOGGER.debug("π Translation key being set: %s", self._attr_translation_key)
+        _LOGGER.debug("π§ͺ Sensor type received: %s", sensor_type)
 
     async def async_added_to_hass(self):
         # Set language code
@@ -396,7 +441,7 @@ class JellyfinGlobalSensor(SensorEntity):
         )
 
         if not await aiofiles.os.path.exists(translation_file_path):
-            _LOGGER.warning("🌐 Missing translation for '%s', falling back to English.", self._language)
+            _LOGGER.warning("π Missing translation for '%s', falling back to English.", self._language)
             translation_file_path = os.path.join(
                 os.path.dirname(__file__), "translations", "en.json"
             )
@@ -411,19 +456,19 @@ class JellyfinGlobalSensor(SensorEntity):
                 entity_path = raw_json_data.get("entity", {}).get("sensor", {}).get(self._attr_translation_key, {})
                 if "state_attributes" in entity_path:
                     loaded_translations_data = entity_path["state_attributes"]
-                    _LOGGER.debug("🌍 Loaded state_attributes translations: %s", loaded_translations_data)
+                    _LOGGER.debug("π Loaded state_attributes translations: %s", loaded_translations_data)
                 else:
                     _LOGGER.warning(
-                        "⚠️ No translations found under entity.sensor.%s.state_attributes in %s",
+                        "β οΈ No translations found under entity.sensor.%s.state_attributes in %s",
                         self._attr_translation_key, translation_file_path
                     )
 
         except FileNotFoundError:
-            _LOGGER.error("❌ Translation file not found at %s", translation_file_path)
+            _LOGGER.error("β Translation file not found at %s", translation_file_path)
         except json.JSONDecodeError as e:
-            _LOGGER.error("🧨 JSON decode error from translation file %s: %s", translation_file_path, e)
+            _LOGGER.error("π§¨ JSON decode error from translation file %s: %s", translation_file_path, e)
         except Exception as e:
-            _LOGGER.error("💥 Unexpected error during translation loading: %s", e)
+            _LOGGER.error("π₯ Unexpected error during translation loading: %s", e)
 
         self._translations = loaded_translations_data
         # --- End of Manual Translation Loading Workaround ---
@@ -440,7 +485,7 @@ class JellyfinGlobalSensor(SensorEntity):
 
     async def _handle_registry_update(self, event):
         if event.data.get("action") in ("create", "remove"):
-            _LOGGER.debug("📡 Registry update detected: %s", event.data.get("action"))
+            _LOGGER.debug("π‘ Registry update detected: %s", event.data.get("action"))
             self._debounce_refresh()
 
     async def _handle_state_change(self, event):
@@ -457,7 +502,7 @@ class JellyfinGlobalSensor(SensorEntity):
                 or (old_state and old_state.state == STATE_UNAVAILABLE and new_state.state != STATE_UNAVAILABLE)
             )
         ):
-            _LOGGER.debug("🔄 Jellyfin entity state changed: %s → %s", old_state.state if old_state else "?", new_state.state)
+            _LOGGER.debug("π Jellyfin entity state changed: %s β %s", old_state.state if old_state else "?", new_state.state)
             self._debounce_refresh()
 
     def _debounce_refresh(self, delay: int = 5):
@@ -474,7 +519,7 @@ class JellyfinGlobalSensor(SensorEntity):
         entity_ids = await get_jellyfin_sensor_entity_ids(self._hass)
 
         if retry and not entity_ids:
-            _LOGGER.warning("🕵️ JellyfinGlobalSensor found no entities — retrying in 10s")
+            _LOGGER.warning("π΅οΈ JellyfinGlobalSensor found no entities β retrying in 10s")
             async_call_later(self._hass, 10, lambda _: self._hass.create_task(self._refresh(retry=True)))
             return
 
@@ -488,11 +533,11 @@ class JellyfinGlobalSensor(SensorEntity):
                 available.append(entity_id)
 
         if self._attached_entity_id not in available and self._attached_entity_id in entity_ids:
-            _LOGGER.warning("🔌 Attached Jellyfin entity is unavailable: %s", self._attached_entity_id)
+            _LOGGER.warning("π Attached Jellyfin entity is unavailable: %s", self._attached_entity_id)
             self._attached_entity_id = None
 
         if set(entity_ids) != set(self._last_entity_ids):
-            _LOGGER.info("🔁 Jellyfin entity list changed — reevaluating attachment")
+            _LOGGER.info("π Jellyfin entity list changed β reevaluating attachment")
             self._attached_entity_id = (
                 next((eid for eid in available), None)
                 or next((eid for eid in entity_ids), None)
@@ -506,12 +551,12 @@ class JellyfinGlobalSensor(SensorEntity):
 
 
         attributes = {
-            "entities": entity_ids,  # Use "entities" as the key
-            "attached_entity": self._attached_entity_id or "None", # Use "attached_entity" as the key
+            self._t("entities", "Entities"): entity_ids,
+            self._t("attached_entity", "Attached Entity"): self._attached_entity_id or "None",
         }
 
-        _LOGGER.debug("📘 Final attribute keys: %s", list(attributes.keys()))
-        _LOGGER.debug("🪪 Attribute mapping preview: %s", attributes)
+        _LOGGER.debug("π Final attribute keys: %s", list(attributes.keys()))
+        _LOGGER.debug("πͺͺ Attribute mapping preview: %s", attributes)
 
         self._attr_extra_state_attributes = attributes
         self.async_write_ha_state()
