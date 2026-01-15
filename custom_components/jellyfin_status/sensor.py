@@ -315,14 +315,6 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
                 "media_type": media_type,
                 "title": title
             }
-            
-            #user_data = {"user": user}
-            #user_data = {"device": device_name}
-            #user_data = {"client": client_app}
-
-            #media_type = item.get("Type", "Unknown")
-
-            #user_data = {"media_type": media_type}
 
             if quality: user_data["quality"] = quality
             if audio_info: user_data["audio"] = audio_info
