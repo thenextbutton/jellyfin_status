@@ -89,7 +89,10 @@ custom_components/jellyfin_status/
 | Field | Description | Example Output |
 | :--- | :--- | :--- |
 | `{user}` | Jellyfin username | `homer` |
+| `{device}` | The hardware name | `Chrome`, `Roku` |
+| `{client}` | The application used | `Jellyfin Web`, `Infuse` |
 | `{title}` | Media title (Movie name, Episode title, or Song) | `Abominable` |
+| `{audio}` | Audio Codec and Channels | `DTS 5.1`, `FLAC Stereo` |
 | `{quality}` | Resolution and Dynamic Range (Video only) | `4K HDR`, `1080p` |
 | `{series}` | TV Series name | `The Bear` |
 | `{season}` | Season number | `2` |
