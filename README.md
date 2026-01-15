@@ -232,7 +232,7 @@ Active: 00, Audio: 00, Episodes: 00, Movies: 00
 Using the playback states extended attribute
 
 ```jinja2
-{% set sessions = state_attr('sensor.ncc_1701_d_status', 'playback_states') %}
+{% set sessions = state_attr('sensor.jellyfin_server_status', 'playback_states') %}
 {%- if sessions %}
   {%- for session_id, data in sessions.items() %}
     {%- set icon = "▶️" if data.play_state == "Playing" else "⏸️" %}
