@@ -147,50 +147,52 @@ Available languages:
 
 Example output:
 ```text
-Friendly name: Jellyfin Status
-Server version: 10.10.7
-Last updated: 14 January 2026 at 22:59:00
-Total Movies: 1250
-Total TV Shows: 145
-Total Episodes: 8420
-Total Albums: 530
-Total Tracks: 12400
+Polling enabled true
+Polling interval 10
+Last updated 15 January 2026 at 21:49:04
+Server version 1.12.0
+Total movies 519
+Total tv shows 61
+Total episodes 2,259
+Total albums 440
+Total tracks 8,848
+Currently playing
+▶️ 🎬 Homer: Airplane! (00:01:16/01:27:42) 1% ⏸️ 🎵 Marge: Ed Sheeran – New Man (00:00:58/00:03:09) 30%
+Active sessions 2
+Audio sessions 1
+Episode sessions 0
+Movie sessions 1
+Detailed playback data:
 
-Currently playing: |
-  ▶️ Homer: The Amazing Spider-Man [4K HDR] (00:14:39 / 02:16:17)
-  ▶️ Marge: The Good Place - S01E01 - Everything Is Fine [1080p] (00:03:31 / 00:26:16) [⚡ 45 fps | 15.5%]
+89dfe2b421d19ffcb7a2e102b240c714:
+user: Homer
+device: NCC-1701-E
+client: Jellyfin Media Player
+media_type: Movie
+title: Airplane!
+quality: 1080p
+audio: AC3 5.1
+year: 1980
+play_state: Playing
+position: '00:01:16'
+runtime: '01:27:42'
+progress_percent: 1%
+play_method: DirectPlay
 
-Active session count: 2
-Audio session count: 0
-Episode session count: 1
-Movie session count: 1
-
-Playback states:
-  Homer:
-    media_type: Movie
-    quality: 4K HDR
-    title: The Amazing Spider-Man
-    year: 2012
-    play_state: Playing
-    position: '00:14:39'
-    runtime: '02:16:17'
-    progress_percent: 10%
-    play_method: DirectPlay
-  Marge:
-    media_type: Episode
-    quality: 1080p
-    title: Everything Is Fine
-    series: The Good Place
-    season_number: 1
-    episode_number: 1
-    play_state: Playing
-    position: '00:03:31'
-    runtime: '00:26:16'
-    progress_percent: 13%
-    play_method: Transcode
-    transcode_progress: 15.5%
-    transcode_fps: 45
-    transcode_reasons: ContainerNotSupported, VideoCodecNotSupported
+d7775557cce3c90f469d39fc33395f99:
+user: Marge
+device: Chrome
+client: Jellyfin Web
+media_type: Audio
+title: New Man
+audio: FLAC Stereo
+artist: Ed Sheeran
+year: 2017
+play_state: Paused
+position: '00:00:58'
+runtime: '00:03:09'
+progress_percent: 30%
+play_method: DirectPlay
 
 Provider: __jellyfin_status__
 ```
@@ -230,29 +232,21 @@ Active: 00, Audio: 00, Episodes: 00, Movies: 00
 Using the playback states extended attribute
 
 ```jinja2
-{% set sessions = state_attr('sensor.<server_name>_status', 'playback_states') %}
-{% if sessions %}
-  {%- for user, data in sessions.items() %}
-    {% set icon = "▶️" if data.play_state == "Playing" else "⏸️" %}
-    {{ icon }} {{ user }}: 
-    {%- if data.series %} {{ data.series }} - {% endif %}
-    {%- if data.season_number %}S{{ '%02d' % data.season_number }}E{{ '%02d' % data.episode_number }} - {% endif %}
-    {%- if data.artist %} {{ data.artist }} - {% endif %}
-    {{- data.title }} 
-    {%- if data.quality %} [{{ data.quality }}]{% endif %}
-    ({{ data.position }} / {{ data.runtime }})
+{% set sessions = state_attr('sensor.ncc_1701_d_status', 'playback_states') %}
+{%- if sessions %}
+  {%- for session_id, data in sessions.items() %}
+    {%- set icon = "▶️" if data.play_state == "Playing" else "⏸️" %}
+    {{ icon }} **{{ data.user }}**: {%- if data.series is defined %} {{ data.series }} - {% endif %}{%- if data.season_number is defined %}S{{ '%02d' % data.season_number }}E{{ '%02d' % data.episode_number }} - {% endif %}{%- if data.artist is defined %} {{ data.artist }} - {% endif %}{{ data.title }} ({{ data.position }} / {{ data.runtime }}){% if data.quality is defined %} [{{ data.quality }}]{% endif %}{% if data.audio is defined %} [{{ data.audio }}]{% endif %}
   {%- endfor %}
-{% else %}
+{%- else %}
   💤 Nothing Playing
-{% endif %}
-
+{%- endif %}
 ```
 
 Result:
 ```
-▶️ Homer: The Amazing Spider-Man [4K HDR] (00:39:50 / 02:16:17)
-▶️ Marge: The Good Place - S01E01 - Everything Is Fine [1080p] (00:03:31 / 00:26:16)
-▶️ Lisa: The Beatles - Eight Days a Week (00:00:29 / 00:02:43)
+▶️ **Homer**:Airplane! (00:00:07 / 01:27:42) [1080p] [AC3 5.1]
+    ⏸️ **Marge**: Ed Sheeran - New Man (00:00:58 / 00:03:09) [FLAC Stereo]
 
 
 💤 Nothing Playing
