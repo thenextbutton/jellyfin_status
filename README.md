@@ -106,6 +106,7 @@ custom_components/jellyfin_status/
 | `{play_method}` | How the file is being served | `DirectPlay`, `Transcode` |
 | `{transcode_info}` | Formatted string for active transcoding | `[⚡ 14 fps \| 1.5%]` |
 | `{transcode_percentage}` | Server transcode buffer/completion | `100%` |
+| `{official_rating}` | Movie/TV series rating | `PG-13`, `R` |
 
 ---
 
@@ -147,54 +148,75 @@ Available languages:
 
 Example output:
 ```text
-Polling enabled true
-Polling interval 10
-Last updated 15 January 2026 at 21:49:04
-Server version 1.12.0
-Total movies 519
-Total tv shows 61
-Total episodes 2,259
-Total albums 440
-Total tracks 8,848
-Currently playing
-▶️ 🎬 Homer: Airplane! (00:01:16/01:27:42) 1% ⏸️ 🎵 Marge: Ed Sheeran – New Man (00:00:58/00:03:09) 30%
-Active sessions 2
-Audio sessions 1
-Episode sessions 0
-Movie sessions 1
-Detailed playback data:
+Polling enabled: true
+Polling interval: 10
+Last updated: 17 January 2026 at 17:40:11
+Server version: 10.11.5
+Total movies: 519
+Total tv shows: 61
+Total episodes: 2,259
+Total albums: 440
+Total tracks: 8,848
+Currently playing: ▶️ 🎬 Bart: The Amazing Spider-Man (01:49:55/02:16:17) 80% ▶️ 📺 Homer: Chucky – Death by Misadventure (00:09:09/00:46:28) 19% ▶️ 🎵 Marge: Queen – One Vision (00:00:43/00:04:04) 17%
+Active sessions: 3
+Audio sessions: 1
+Episode sessions: 1
+Movie sessions: 1
+Detailed playback data: 
 
-89dfe2b421d19ffcb7a2e102b240c714:
-user: Homer
-device: NCC-1701-E
-client: Jellyfin Media Player
+de3ad3aeb91124eb99fb5472d4030371:
+user: Bart
+device: Chrome
+client: Jellyfin Web
 media_type: Movie
-title: Airplane!
+title: The Amazing Spider-Man
+official_rating: PG-13
 quality: 1080p
 audio: AC3 5.1
-year: 1980
+year: 2012
 play_state: Playing
-position: '00:01:16'
-runtime: '01:27:42'
-progress_percent: 1%
+position: '01:49:55'
+runtime: '02:16:17'
+progress_percent: 80%
+play_method: Transcode
+transcode_progress: 81.2%
+transcode_fps: 56
+transcode_reasons: ContainerNotSupported, VideoCodecNotSupported, AudioCodecNotSupported
+
+2a00d32ab76b355ad1edb576e5d33ed6:
+user: Homer
+device: NCC-1701-D
+client: Jellyfin Media Player
+media_type: Episode
+title: Death by Misadventure
+quality: 1080p
+audio: AC3 5.1
+series: Chucky
+season_number: 1
+episode_number: 1
+year: 2021
+play_state: Playing
+position: '00:09:09'
+runtime: '00:46:28'
+progress_percent: 19%
 play_method: DirectPlay
 
-d7775557cce3c90f469d39fc33395f99:
+8049fb5e8b848a8880a071180c5df882:
 user: Marge
 device: Chrome
 client: Jellyfin Web
 media_type: Audio
-title: New Man
+title: One Vision
 audio: FLAC Stereo
-artist: Ed Sheeran
-year: 2017
-play_state: Paused
-position: '00:00:58'
-runtime: '00:03:09'
-progress_percent: 30%
+artist: Queen
+year: 2009
+play_state: Playing
+position: '00:00:43'
+runtime: '00:04:04'
+progress_percent: 17%
 play_method: DirectPlay
-
-Provider: __jellyfin_status__
+Provider
+__jellyfin_status__
 ```
 
 
@@ -232,24 +254,79 @@ Active: 00, Audio: 00, Episodes: 00, Movies: 00
 Using the playback states extended attribute
 
 ```jinja2
-{% set sessions = state_attr('sensor.jellyfin_server_status', 'playback_states') %}
-{%- if sessions %}
-  {%- for session_id, data in sessions.items() %}
-    {%- set icon = "▶️" if data.play_state == "Playing" else "⏸️" %}
-    {{ icon }} **{{ data.user }}**: {%- if data.series is defined %} {{ data.series }} - {% endif %}{%- if data.season_number is defined %}S{{ '%02d' % data.season_number }}E{{ '%02d' % data.episode_number }} - {% endif %}{%- if data.artist is defined %} {{ data.artist }} - {% endif %}{{ data.title }} ({{ data.position }} / {{ data.runtime }}){% if data.quality is defined %} [{{ data.quality }}]{% endif %}{% if data.audio is defined %} [{{ data.audio }}]{% endif %}
-  {%- endfor %}
+### 🎬 Jellyfin Status
+---
+{%- set sessions = state_attr('sensor.ncc_1701_d_status', 'playback_states') -%}
+{%- if sessions -%}
+{%- for session_id, data in sessions.items() %}
+{%- if data.title != "Browsing" %}
+
+{# --- Metadata & Icons --- #}
+{%- set artist_part = (data.artist ~ " - ") if data.artist is defined else "" -%}
+{%- set series_part = (data.series ~ " - ") if data.series is defined else "" -%}
+{%- set ep_part = ("S" ~ '%02d' % data.season_number ~ "E" ~ '%02d' % data.episode_number ~ " - ") if data.season_number is defined else "" -%}
+{%- set title_line = series_part ~ ep_part ~ artist_part ~ data.title -%}
+
+{%- set official_rating = data.official_rating | default('') -%}
+
+{%- if data.media_type == "Audio" -%}{%- set m_icon = "🎵" -%}
+{%- elif data.series is defined or data.season_number is defined -%}{%- set m_icon = "📺" -%}
+{%- else -%}{%- set m_icon = "🎥" -%}{%- endif -%}
+{%- set p_icon = "▶️" if data.play_state == "Playing" else "⏸️" -%}
+
+{# --- Improved Countdown Logic --- #}
+{%- set countdown = "" -%}
+{%- if data.media_type != "Audio" -%}
+  {%- set cur = data.position.split(':') -%}
+  {%- set tot = data.runtime.split(':') -%}
+  {%- set diff = ((tot[0]|int*3600)+(tot[1]|int*60)+(tot[2]|int)) - ((cur[0]|int*3600)+(cur[1]|int*60)+(cur[2]|int)) -%}
+  {%- if diff > 60 -%}
+    {%- set countdown = " (" ~ (diff/60)|round(0)|int ~ "m left)" -%}
+  {%- elif diff > 0 -%}
+    {%- set countdown = " (" ~ diff ~ "s left)" -%}
+  {%- endif -%}
+{%- endif -%}
+
+{# --- Transcode Badge --- #}
+{%- set is_transcoding = data.play_method is defined and data.play_method != "DirectPlay" -%}
+{%- set raw_tp = data.transcode_progress | default('0') | string -%}
+{%- set tp_num = raw_tp.replace('%', '') | float(0) -%}
+{%- set fps = data.transcode_fps if data.transcode_fps is defined else none -%}
+{%- if is_transcoding -%}
+  {%- if tp_num >= 100 %}{%- set t_badge = " | ⚙️👍" -%}
+  {%- elif fps is not none and fps | float < 24 %}{%- set t_badge = " | ⚙️⚠️" -%}
+  {%- else %}{%- set t_badge = " | ⚙️♻️" -%}{%- endif -%}
+{%- else %}{%- set t_badge = "" -%}{%- endif -%}
+
+{# --- Elastic Bar Logic --- #}
+{%- set title_length = title_line | length -%}
+{%- set min_width, max_width = 25, 40 -%}
+{%- if title_length < min_width %}{%- set dynamic_width = min_width -%}
+{%- elif title_length > max_width %}{%- set dynamic_width = max_width -%}
+{%- else %}{%- set dynamic_width = title_length -%}{%- endif -%}
+
+{%- set raw_progress = data.progress_percent | default('0') | string -%}
+{%- set progress = raw_progress.replace('%', '') | float(0) -%}
+{%- set filled = (progress / (100 / dynamic_width)) | int -%}
+{%- set empty = dynamic_width - filled -%}
+{%- set bar = "█" * filled + "░" * empty -%}
+
+{{ p_icon }} **{{ data.user }}** | 💻 {{ data.device }}{{ t_badge }} {% if is_transcoding and tp_num < 100 and fps is not none %}({{ fps | int }} fps){% endif %}
+{{ m_icon }} {{ title_line }}{% if data.official_rating is defined %} | 🔞 {{ data.official_rating }}{% endif %}
+🕒 *{{ data.position }} / {{ data.runtime }}{{ countdown }}*
+`{{ bar }}` {{ progress | int }}%
+
+---
+{%- endif %}
+{%- endfor %}
 {%- else %}
-  💤 Nothing Playing
+💤 Nothing Playing
 {%- endif %}
 ```
 
 Result:
 ```
-▶️ **Homer**:Airplane! (00:00:07 / 01:27:42) [1080p] [AC3 5.1]
-    ⏸️ **Marge**: Ed Sheeran - New Man (00:00:58 / 00:03:09) [FLAC Stereo]
 
-
-💤 Nothing Playing
 ```
 
 ---
