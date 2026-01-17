@@ -260,6 +260,23 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
             artist = next(iter(item.get("Artists", [])), item.get("AlbumArtist", "Unknown"))
             series = item.get("SeriesName", "Unknown")
             
+            # --- Global Rating Cleaner ---
+            raw_rating = item.get("OfficialRating", "")
+
+            if raw_rating:
+                # Split by '/' or ';' in case of duplicates and take the first one
+                clean_rating = re.split(r'[;/]', raw_rating)[0].strip()
+    
+                # Remove prefixes like "US:", "United States:", "Germany:FSK-", etc.
+                # This looks for a colon and takes everything after it
+                if ":" in clean_rating:
+                    clean_rating = clean_rating.split(":")[-1].strip()
+
+                # Final cleanup: remove the word "Rated" if it's still there
+                official_rating = clean_rating.replace("Rated", "").strip()
+            else:
+                official_rating = ""
+            
             # --- Audio Stream Info ---
             streams = item.get("MediaStreams", [])
             audio_stream = next((s for s in streams if s.get("Type") == "Audio"), {})
@@ -313,7 +330,8 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
                 "device": device_name,
                 "client": client_app,
                 "media_type": media_type,
-                "title": title
+                "title": title,
+                "official_rating": official_rating
             }
 
             if quality: user_data["quality"] = quality
@@ -356,6 +374,7 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
                 "device": device_name,
                 "client": client_app,
                 "title": title,
+                "official_rating": official_rating,
                 "quality": quality,
                 "audio": audio_info,
                 "series": user_data.get("series", ""),
