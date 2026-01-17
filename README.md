@@ -215,8 +215,8 @@ position: '00:00:43'
 runtime: '00:04:04'
 progress_percent: 17%
 play_method: DirectPlay
-Provider
-__jellyfin_status__
+
+Provider: __jellyfin_status__
 ```
 
 
