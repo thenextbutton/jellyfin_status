@@ -220,13 +220,6 @@ __jellyfin_status__
 ```
 
 
-
-
-<img width="300" alt="image" src="https://github.com/user-attachments/assets/3757a367-9d29-419a-ab34-98977c784a78" />
-<br>
-<img width="300" alt="image" src="https://github.com/user-attachments/assets/c15e8579-221f-44e0-afd5-6c30aa4d28b1" />
-<img width="300" alt="image" src="https://github.com/user-attachments/assets/4196088a-da27-458f-b90f-4ee1c8ca62da" />
-
 ---
 ## 👨‍💻 Jinja2 Examples
 
@@ -237,18 +230,19 @@ Retreive a TOTAL of all Active sessions, Audio, Episodes and Movies across all t
 {% for s in states.sensor %}
   {% set a = s.attributes %}
   {% if a.get('provider') == '__jellyfin_status__' %}
-    {% if a.get('active_session_count') is number %}{% set ns.active = ns.active + a.get('active_session_count') %}{% endif %}
-    {% if a.get('audio_session_count') is number %}{% set ns.audio = ns.audio + a.get('audio_session_count') %}{% endif %}
-    {% if a.get('episode_session_count') is number %}{% set ns.episode = ns.episode + a.get('episode_session_count') %}{% endif %}
-    {% if a.get('movie_session_count') is number %}{% set ns.movie = ns.movie + a.get('movie_session_count') %}{% endif %}
+    {% set ns.active = ns.active + (a.get('active_session_count') | int(0)) %}
+    {% set ns.audio = ns.audio + (a.get('audio_session_count') | int(0)) %}
+    {% set ns.episode = ns.episode + (a.get('episode_session_count') | int(0)) %}
+    {% set ns.movie = ns.movie + (a.get('movie_session_count') | int(0)) %}
   {% endif %}
 {% endfor %}
-Active: {{ '%02d' % ns.active }}, Audio: {{ '%02d' % ns.audio }}, Episodes: {{ '%02d' % ns.episode }}, Movies: {{ '%02d' % ns.movie }}
+
+▶️ **{{ '%02d' % ns.active }}** Active | 🎵 **{{ '%02d' % ns.audio }}** | 📺 **{{ '%02d' % ns.episode }}** | 🎥 **{{ '%02d' % ns.movie }}**
 ```
 
 Result:
 ```
-Active: 00, Audio: 00, Episodes: 00, Movies: 00
+▶️ 00 Active | 🎵 00 | 📺 00 | 🎥 00
 ```
 
 Using the playback states extended attribute
@@ -325,8 +319,23 @@ Using the playback states extended attribute
 ```
 
 Result:
-```
+```text
+🎬 Jellyfin Status
 
+▶️ Bart | 💻 Chrome | ⚙️👍
+📺 Chucky - S01E01 - Death by Misadventure
+🕒 00:00:01 / 00:46:28 (46m left)
+░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0%
+
+▶️ Homer | 💻 NCC-1701-D
+🎵 The Offspring - Have You Ever
+🕒 00:01:46 / 00:03:56
+████████████░░░░░░░░░░░░░░░░░ 44%
+
+▶️ Marge | 💻 Chrome | ⚙️♻️ (62 fps)
+🎥 The Amazing Spider-Man | 🔞 PG-13
+🕒 01:15:59 / 02:16:17 (60m left)
+█████████████░░░░░░░░░░░░ 55%
 ```
 
 ---
