@@ -11,7 +11,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Get clean version
         id: get_clean_version
@@ -27,8 +27,7 @@ jobs:
           zip -r ../../jellyfin_status.zip ./* -x '.*'
 
       - name: Upload Release Asset
-        uses: JasonEtco/upload-to-release@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          args: ./jellyfin_status.zip application/zip
+        run: |
+          gh release upload ${{ github.event.release.tag_name }} ./jellyfin_status.zip --clobber
