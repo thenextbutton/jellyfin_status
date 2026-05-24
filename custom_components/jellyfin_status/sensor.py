@@ -207,8 +207,10 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
 
         for session in sessions:
             item = session.get("NowPlayingItem")
-            # Using the same logic as the attributes to define 'Active'
-            play_state = session.get("PlaybackState") or ("Paused" if session.get("PlayState", {}).get("IsPaused") else "Playing")
+            # Robust extraction of the play/pause state from PlayState dict
+            is_paused = session.get("PlayState", {}).get("IsPaused", False)
+            play_state = "Paused" if is_paused else "Playing"
+            
             if item and play_state in ["Playing", "Paused"]:
                 active_count += 1
 
@@ -241,173 +243,186 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
         # 2. Filter for truly active sessions
         for session in sessions:
             item = session.get("NowPlayingItem")
-            play_state = session.get("PlaybackState") or ("Paused" if session.get("PlayState", {}).get("IsPaused") else "Playing")
+            is_paused = session.get("PlayState", {}).get("IsPaused", False)
+            play_state = "Paused" if is_paused else "Playing"
+            
             if item and play_state in ["Playing", "Paused"]:
-                active.append((session.get("UserName", "Unknown"), item, session))
+                # Ensure user and item name always have a string fallback so sorting never fails
+                user_name = session.get("UserName") or "Unknown User"
+                item_name = item.get("Name") or "Unknown Title"
+                active.append((user_name, item_name, item, session))
 
-        # 3. Process sorted sessions
-        sorted_sessions = sorted(active, key=lambda x: (x[0].lower(), x[1].get("Name", "").lower()))
+        # 3. Process sorted sessions safely
+        sorted_sessions = sorted(active, key=lambda x: (x[0].lower(), x[1].lower()))
         playback_states = {}
         template_phrases = []
 
-        for user, item, session in sorted_sessions:
-            # --- Data Extraction ---
-            session_id = session.get("Id", "unknown_session")
-            device_name = session.get("DeviceName", "Unknown Device")
-            client_app = session.get("Client", "Unknown Client")
-            media_type = item.get("Type", "Unknown")
-            title = item.get("Name", "Unknown")
-            artist = next(iter(item.get("Artists", [])), item.get("AlbumArtist", "Unknown"))
-            series = item.get("SeriesName", "Unknown")
-            
-            # --- Global Rating Cleaner ---
-            raw_rating = item.get("OfficialRating", "")
-
-            if raw_rating:
-                # Split by '/' or ';' in case of duplicates and take the first one
-                clean_rating = re.split(r'[;/]', raw_rating)[0].strip()
-    
-                # Remove prefixes like "US:", "United States:", "Germany:FSK-", etc.
-                # This looks for a colon and takes everything after it
-                if ":" in clean_rating:
-                    clean_rating = clean_rating.split(":")[-1].strip()
-
-                # Final cleanup: remove the word "Rated" if it's still there
-                official_rating = clean_rating.replace("Rated", "").strip()
-            else:
-                official_rating = ""
-            
-            # --- Audio Stream Info ---
-            streams = item.get("MediaStreams", [])
-            audio_stream = next((s for s in streams if s.get("Type") == "Audio"), {})
-            codec = audio_stream.get("Codec", "").upper()
-            channels = audio_stream.get("Channels")
-            channel_map = {1: "Mono", 2: "Stereo", 6: "5.1", 8: "7.1"}
-            channel_label = channel_map.get(channels, f"{channels}ch") if channels else ""
-            audio_info = f"{codec} {channel_label}".strip() if codec else ""
-
-            # --- Timing ---
-            ticks = session.get("PlayState", {}).get("PositionTicks", 0)
-            runtime = item.get("RunTimeTicks", 0)
-            percent = int((ticks / runtime) * 100) if ticks > 0 and runtime > 0 else 0
-
-            # --- Transcoding Info ---
-            trans_info = session.get("TranscodingInfo", {})
-            play_method = session.get("PlayState", {}).get("PlayMethod", "Unknown")
+        for user, item_name, item, session in sorted_sessions:
             try:
-                trans_fps = int(float(trans_info.get("Framerate", 0)))
-            except (TypeError, ValueError):
-                trans_fps = 0
+                # --- Data Extraction ---
+                session_id = session.get("Id", "unknown_session")
+                device_name = session.get("DeviceName", "Unknown Device")
+                client_app = session.get("Client", "Unknown Client")
+                media_type = item.get("Type", "Unknown")
+                title = item_name
+                artist = next(iter(item.get("Artists", [])), item.get("AlbumArtist", "Unknown")) if item.get("Artists") or item.get("AlbumArtist") else "Unknown"
+                series = item.get("SeriesName", "Unknown")
+                
+                # --- Global Rating Cleaner ---
+                raw_rating = item.get("OfficialRating", "")
+                if raw_rating:
+                    clean_rating = re.split(r'[;/]', raw_rating)[0].strip()
+                    if ":" in clean_rating:
+                        clean_rating = clean_rating.split(":")[-1].strip()
+                    official_rating = clean_rating.replace("Rated", "").strip()
+                else:
+                    official_rating = ""
+                
+                # --- Audio Stream Info ---
+                streams = item.get("MediaStreams", [])
+                audio_stream = next((s for s in streams if s.get("Type") == "Audio"), {})
+                codec = audio_stream.get("Codec", "").upper()
+                channels = audio_stream.get("Channels")
+                channel_map = {1: "Mono", 2: "Stereo", 6: "5.1", 8: "7.1"}
+                channel_label = channel_map.get(channels, f"{channels}ch") if channels else ""
+                audio_info = f"{codec} {channel_label}".strip() if codec else ""
 
-            t_percent_val = "0%"
-            if "CompletionPercentage" in trans_info:
-                t_percent_val = f"{round(trans_info.get('CompletionPercentage'), 1)}%"
-            elif play_method == "Transcode":
-                t_percent_val = "100%"
+                # --- Timing ---
+                ticks = session.get("PlayState", {}).get("PositionTicks", 0)
+                runtime = item.get("RunTimeTicks", 0)
+                percent = int((ticks / runtime) * 100) if ticks > 0 and runtime > 0 else 0
 
-            # --- Video Quality ---
-            vid_stream = next((s for s in streams if s.get("Type") == "Video"), {})
-            width = vid_stream.get("Width", 0)
-            v_range = vid_stream.get("VideoRange", "")
-            
-            if width >= 3840: res = "4K"
-            elif width >= 1920: res = "1080p"
-            elif width >= 1280: res = "720p"
-            elif width >= 720: res = "480p"
-            else: res = f"{width}p" if width > 0 else ""
-
-            quality = f"{res} {v_range}" if "SDR" not in v_range and v_range else res
-            quality = quality.strip()
-
-            # --- Status Icons ---
-            status = session.get("PlaybackState") or ("Paused" if session.get("PlayState", {}).get("IsPaused") else "Playing")
-            emoji = {"Audio": "🎵", "Movie": "🎬", "Episode": "📺"}.get(media_type, "📺")
-            status_emoji = "▶️" if status == "Playing" else "⏸️"
-
-            # --- 4. Fill the raw data dictionary (playback_states) ---
-            user_data = {
-                "user": user,
-                "device": device_name,
-                "client": client_app,
-                "media_type": media_type,
-                "title": title,
-                "official_rating": official_rating
-            }
-
-            if quality: user_data["quality"] = quality
-            if audio_info: user_data["audio"] = audio_info
-            
-            user_data["title"] = title
-
-            if media_type == "Episode":
-                if series and series != "Unknown": user_data["series"] = series
-                p_idx = item.get("ParentIndexNumber")
-                idx = item.get("IndexNumber")
-                if p_idx is not None: user_data["season_number"] = p_idx
-                if idx is not None: user_data["episode_number"] = idx
-            elif media_type == "Audio":
-                if artist and artist != "Unknown": user_data["artist"] = artist
-
-            if item.get("ProductionYear"):
-                user_data["year"] = item.get("ProductionYear")
-
-            user_data.update({
-                "play_state": status,
-                "position": self._format_position(ticks) if ticks > 0 else "00:00:00",
-                "runtime": self._format_position(runtime) if runtime > 0 else "00:00:00",
-                "progress_percent": f"{percent}%",
-                "play_method": play_method,
-            })
-
-            if play_method == "Transcode":
-                user_data["transcode_progress"] = t_percent_val
-                if t_percent_val != "100%": user_data["transcode_fps"] = trans_fps
-                user_data["transcode_reasons"] = ", ".join(trans_info.get("TranscodeReasons", []))
-
-            playback_states[session_id] = user_data
-
-            # --- 5. Fill the Template Context ---
-            t_info = f" [⚡ {trans_fps} fps]" if play_method == "Transcode" and trans_fps > 0 else ""
-
-            context = {
-                "user": user,
-                "device": device_name,
-                "client": client_app,
-                "title": title,
-                "official_rating": official_rating,
-                "quality": quality,
-                "audio": audio_info,
-                "series": user_data.get("series", ""),
-                "season": user_data.get("season_number", ""),
-                "episode": user_data.get("episode_number", ""),
-                "artist": user_data.get("artist", ""),
-                "media_icon": emoji,
-                "play_icon": status_emoji,
-                "playing_position": user_data["position"],
-                "playback_runtime": user_data["runtime"],
-                "playback_percentage": user_data["progress_percent"],
-                "play_method": play_method,
-                "transcode_fps": trans_fps,
-                "transcode_percentage": user_data.get("transcode_progress", "0%"),
-                "transcode_info": t_info 
-            }
-
-            if template:
+                # --- Transcoding Info ---
+                trans_info = session.get("TranscodingInfo", {})
+                play_method = session.get("PlayState", {}).get("PlayMethod", "Unknown")
                 try:
-                    rendered = template.format(**context)
-                    rendered = re.sub(r"^\s*[–-]\s*", "", rendered)
-                    rendered = re.sub(r":\s*[–-]\s*", ": ", rendered) 
-                    template_phrases.append(rendered.strip())
-                except KeyError as e:
-                    template_phrases.append(f"⚠️ Missing key: {{{e.args[0]}}}")
+                    trans_fps = int(float(trans_info.get("Framerate", 0)))
+                except (TypeError, ValueError):
+                    trans_fps = 0
+
+                t_percent_val = "0%"
+                if "CompletionPercentage" in trans_info:
+                    t_percent_val = f"{round(trans_info.get('CompletionPercentage'), 1)}%"
+                elif play_method == "Transcode":
+                    t_percent_val = "100%"
+
+                # --- Video Quality ---
+                vid_stream = next((s for s in streams if s.get("Type") == "Video"), {})
+                width = vid_stream.get("Width", 0)
+                v_range = vid_stream.get("VideoRange", "")
+                
+                if width >= 3840: res = "4K"
+                elif width >= 1920: res = "1080p"
+                elif width >= 1280: res = "720p"
+                elif width >= 720: res = "480p"
+                else: res = f"{width}p" if width > 0 else ""
+
+                quality = f"{res} {v_range}" if "SDR" not in v_range and v_range else res
+                quality = quality.strip()
+
+                # --- Status Icons ---
+                is_paused = session.get("PlayState", {}).get("IsPaused", False)
+                status = "Paused" if is_paused else "Playing"
+                emoji = {"Audio": "🎵", "Movie": "🎬", "Episode": "📺"}.get(media_type, "📺")
+                status_emoji = "▶️" if status == "Playing" else "⏸️"
+
+                # --- 4. Fill the raw data dictionary (playback_states) ---
+                user_data = {
+                    "user": user,
+                    "device": device_name,
+                    "client": client_app,
+                    "media_type": media_type,
+                    "title": title,
+                    "official_rating": official_rating
+                }
+
+                if quality: user_data["quality"] = quality
+                if audio_info: user_data["audio"] = audio_info
+
+                if media_type == "Episode":
+                    if series and series != "Unknown": user_data["series"] = series
+                    p_idx = item.get("ParentIndexNumber")
+                    idx = item.get("IndexNumber")
+                    if p_idx is not None: user_data["season_number"] = p_idx
+                    if idx is not None: user_data["episode_number"] = idx
+                elif media_type == "Audio":
+                    if artist and artist != "Unknown": user_data["artist"] = artist
+
+                if item.get("ProductionYear"):
+                    user_data["year"] = item.get("ProductionYear")
+
+                user_data.update({
+                    "play_state": status,
+                    "position": self._format_position(ticks) if ticks > 0 else "00:00:00",
+                    "runtime": self._format_position(runtime) if runtime > 0 else "00:00:00",
+                    "progress_percent": f"{percent}%",
+                    "play_method": play_method,
+                })
+
+                if play_method == "Transcode":
+                    user_data["transcode_progress"] = t_percent_val
+                    if t_percent_val != "100%": user_data["transcode_fps"] = trans_fps
+                    user_data["transcode_reasons"] = ", ".join(trans_info.get("TranscodeReasons", []))
+
+                playback_states[session_id] = user_data
+
+                # --- 5. Fill the Template Context ---
+                t_info = f" [⚡ {trans_fps} fps]" if play_method == "Transcode" and trans_fps > 0 else ""
+
+                context = {
+                    "user": user,
+                    "device": device_name,
+                    "client": client_app,
+                    "title": title,
+                    "official_rating": official_rating,
+                    "quality": quality,
+                    "audio": audio_info,
+                    "series": user_data.get("series", ""),
+                    "season": user_data.get("season_number", ""),
+                    "episode": user_data.get("episode_number", ""),
+                    "artist": user_data.get("artist", ""),
+                    "media_icon": emoji,
+                    "play_icon": status_emoji,
+                    "playing_position": user_data["position"],
+                    "playback_runtime": user_data["runtime"],
+                    "playback_percentage": user_data["progress_percent"],
+                    "play_method": play_method,
+                    "transcode_fps": trans_fps,
+                    "transcode_percentage": user_data.get("transcode_progress", "0%"),
+                    "transcode_info": t_info 
+                }
+
+                if template:
+                    try:
+                        rendered = template.format(**context)
+                        rendered = re.sub(r"^\s*[–-]\s*", "", rendered)
+                        rendered = re.sub(r":\s*[–-]\s*", ": ", rendered) 
+                        template_phrases.append(rendered.strip())
+                    except KeyError as e:
+                        template_phrases.append(f"⚠️ Missing key: {{{e.args[0]}}}")
+                else:
+                    # Smart fallback based on media type
+                    if media_type == "Audio":
+                        track_info = f" by {artist}" if artist and artist != "Unknown" else ""
+                        template_phrases.append(f"{status_emoji} {user} is listening to {title}{track_info}")
+                    else:
+                        template_phrases.append(f"{status_emoji} {user} is watching {title}")
+
+            except Exception as e:
+                _LOGGER.error("Error processing active Jellyfin session attributes: %s", e, exc_info=True)
 
         # 7. Final assignment
         idle_msg = self.entry.options.get("idle_message", "Idle")
-        attrs["currently_playing"] = "\n".join(template_phrases) if template_phrases else idle_msg
+        
+        # Keep currently_playing as a raw list of strings if multiple sessions exist
+        if template_phrases:
+            attrs["currently_playing"] = template_phrases if len(template_phrases) > 1 else template_phrases[0]
+        else:
+            attrs["currently_playing"] = idle_msg
         attrs["active_session_count"] = len(active)
-        attrs["audio_session_count"] = sum(1 for _, itm, _ in active if itm.get("Type") == "Audio")
-        attrs["episode_session_count"] = sum(1 for _, itm, _ in active if itm.get("Type") == "Episode")
-        attrs["movie_session_count"] = sum(1 for _, itm, _ in active if itm.get("Type") == "Movie")
+        attrs["audio_session_count"] = sum(1 for _, _, itm, _ in active if itm.get("Type") == "Audio")
+        attrs["episode_session_count"] = sum(1 for _, _, itm, _ in active if itm.get("Type") == "Episode")
+        attrs["movie_session_count"] = sum(1 for _, _, itm, _ in active if itm.get("Type") == "Movie")
         attrs["playback_states"] = playback_states
         attrs["provider"] = "__jellyfin_status__"
 
@@ -415,7 +430,6 @@ class JellyfinSensor(CoordinatorEntity, SensorEntity):
 
 
     def _format_position(self, ticks: int) -> str:
-        # Jellyfin uses 10,000,000 ticks per second
         seconds = ticks // 10_000_000
         hours, remainder = divmod(seconds, 3600)
         minutes, seconds = divmod(remainder, 60)
@@ -446,7 +460,6 @@ class JellyfinGlobalSensor(SensorEntity):
         _LOGGER.debug("🧪 Sensor type received: %s", sensor_type)
 
     async def async_added_to_hass(self):
-        # Set language code
         self._language = self._hass.config.language.split("-")[0]
 
         # --- Manual Translation Loading Workaround ---
@@ -466,7 +479,6 @@ class JellyfinGlobalSensor(SensorEntity):
                 content = await f.read()
                 raw_json_data = json.loads(content)
 
-                # Extract translation section from entity.sensor.<translation_key>.state_attributes
                 entity_path = raw_json_data.get("entity", {}).get("sensor", {}).get(self._attr_translation_key, {})
                 if "state_attributes" in entity_path:
                     loaded_translations_data = entity_path["state_attributes"]
@@ -487,7 +499,6 @@ class JellyfinGlobalSensor(SensorEntity):
         self._translations = loaded_translations_data
         # --- End of Manual Translation Loading Workaround ---
 
-        # Register refresh and listen hooks
         async_call_later(self._hass, 10, lambda _: self._hass.create_task(self._refresh(retry=True)))
         async_track_time_interval(self._hass, lambda _: self._hass.create_task(self._refresh()), timedelta(seconds=30))
         self._hass.bus.async_listen(EVENT_ENTITY_REGISTRY_UPDATED, self._handle_registry_update)
