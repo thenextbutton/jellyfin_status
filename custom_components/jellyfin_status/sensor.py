@@ -98,26 +98,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
 
     hass.bus.async_listen(EVENT_ENTITY_REGISTRY_UPDATED, handle_registry_action)
 
-# Self Healing Global Sensor, every 5 minutes...
-    async def restore_globals_if_missing(now):
-        sensor_ids = await get_jellyfin_sensor_entity_ids(hass)
-        if sensor_ids:  # Only heal if some Jellyfin entities exist
-            registry = async_get_registry(hass)
-            global_ids = {"sensor.jellyfin_servers_total", "sensor.jellyfin_servers_error"}
-            found = [e for e in registry.entities.values() if e.entity_id in global_ids]
-
-            if not found:
-                global_sensors = [
-                    JellyfinGlobalSensor(hass, "total"),
-                    JellyfinGlobalSensor(hass, "error")
-                ]
-                async_add_entities(global_sensors)
-                _LOGGER.info("🛠️ Global sensors re-created via background restore")
-
-    async_track_time_interval(hass, restore_globals_if_missing, timedelta(minutes=5))
-
-
-
 # Per-server Jellyfin status
 class JellyfinSensor(CoordinatorEntity, SensorEntity):
     def __init__(self, coordinator, entry: ConfigEntry, async_add_entities: AddEntitiesCallback):
